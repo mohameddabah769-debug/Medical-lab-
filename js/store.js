@@ -370,7 +370,7 @@ class LabStore {
   addExpense(expenseData) {
     const newExpense = {
       id: `EXP-${Date.now()}`,
-      title: expenseData.title.trim(),
+      title: (expenseData.title || expenseData.category || "مصروف عام").trim(),
       category: expenseData.category || "مستلزمات عامة",
       amount: parseFloat(expenseData.amount) || 0,
       date: expenseData.date || new Date().toISOString().split("T")[0],
