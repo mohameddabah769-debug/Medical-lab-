@@ -3,7 +3,7 @@
  * محرك إدارة الحالة المركزي والتخزين الفوري (State Management & Persistence Store)
  */
 
-const STORAGE_KEY = "LABCORE_CLINICAL_DATABASE_V6";
+const STORAGE_KEY = "LABCORE_CLINICAL_DATABASE_V7";
 
 class LabStore {
   constructor() {
@@ -21,6 +21,26 @@ class LabStore {
         const parsed = JSON.parse(raw);
         if (parsed && parsed.orders && parsed.tests) {
           return parsed;
+        }
+      }
+
+      // في حال الترقية من إصدار سابق، ننقل السجلات الحية مع اعتماد قائمة أسعار التحاليل الجديدة
+      const oldKeys = ["LABCORE_CLINICAL_DATABASE_V6", "LABCORE_CLINICAL_DATABASE_V5", "LABCORE_CLINICAL_DATABASE_V4"];
+      for (const oldKey of oldKeys) {
+        const oldRaw = localStorage.getItem(oldKey);
+        if (oldRaw) {
+          const oldData = JSON.parse(oldRaw);
+          const initial = JSON.parse(JSON.stringify(window.SEED_DATA));
+          if (oldData.orders) initial.orders = oldData.orders;
+          if (oldData.patients) initial.patients = oldData.patients;
+          if (oldData.expenses) initial.expenses = oldData.expenses;
+          if (oldData.staff) initial.staff = oldData.staff;
+          if (oldData.labProfile) initial.labProfile = oldData.labProfile;
+          initial.theme = localStorage.getItem("LABCORE_THEME") || "dark";
+          initial.currentView = "dashboard";
+          initial.activeOrderId = null;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+          return initial;
         }
       }
     } catch (e) {
@@ -306,6 +326,20 @@ class LabStore {
     this.state.packages.push(newPkg);
     this.save();
     return newPkg;
+  }
+
+  updatePackage(id, pkgData) {
+    const pkg = (this.state.packages || []).find(p => p.id === id);
+    if (!pkg) return false;
+    Object.assign(pkg, pkgData);
+    this.save();
+    return pkg;
+  }
+
+  deletePackage(id) {
+    this.state.packages = (this.state.packages || []).filter(p => p.id !== id);
+    this.save();
+    return true;
   }
 
   // ==========================================

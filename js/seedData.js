@@ -19,407 +19,1223 @@ window.SEED_DATA = {
 
   // 1. دليل التحاليل الطبية الشامل (أكثر من 50 تحليلاً معيارياً مقسمة حسب التخصصات المخبرية وألوان أنابيب السحب)
   tests: [
-    // -------------------------------------------------------------
-    // أمراض الدم والتجلط (Hematology & Coagulation)
-    // -------------------------------------------------------------
     {
-      id: "test-cbc",
-      code: "CBC",
-      nameAr: "صورة دم كاملة مع العد التفريقي (15 متغير)",
-      nameEn: "Complete Blood Count & 5-Part Diff (CBC)",
-      category: "أمراض الدم (Hematology)",
-      tube: "EDTA (أنبوبة موف / كاب بنفسجي)",
-      price: 180,
-      parameters: [
-        { key: "wbc", name: "White Blood Cells (WBCs)", unit: "10^3/uL", min: 4.0, max: 11.0, precision: 1 },
-        { key: "rbc", name: "Red Blood Cells (RBCs)", unit: "10^6/uL", min: 4.5, max: 5.9, femaleMin: 4.0, femaleMax: 5.2, precision: 2 },
-        { key: "hb", name: "Hemoglobin (Hb)", unit: "g/dL", min: 13.0, max: 17.5, femaleMin: 12.0, femaleMax: 15.5, precision: 1 },
-        { key: "hct", name: "Hematocrit (HCT / PCV)", unit: "%", min: 40.0, max: 50.0, femaleMin: 36.0, femaleMax: 46.0, precision: 1 },
-        { key: "mcv", name: "Mean Corpuscular Volume (MCV)", unit: "fL", min: 80.0, max: 98.0, precision: 1 },
-        { key: "mch", name: "Mean Corpuscular Hb (MCH)", unit: "pg", min: 27.0, max: 33.0, precision: 1 },
-        { key: "mchc", name: "MCHC", unit: "g/dL", min: 32.0, max: 36.0, precision: 1 },
-        { key: "rdw", name: "RDW-CV (Red Cell Distribution)", unit: "%", min: 11.5, max: 14.5, precision: 1 },
-        { key: "plt", name: "Platelet Count (PLT)", unit: "10^3/uL", min: 150, max: 450, precision: 0 },
-        { key: "mpv", name: "Mean Platelet Volume (MPV)", unit: "fL", min: 7.5, max: 11.5, precision: 1 },
-        { key: "neut", name: "Neutrophils %", unit: "%", min: 40, max: 75, precision: 0 },
-        { key: "lymph", name: "Lymphocytes %", unit: "%", min: 20, max: 45, precision: 0 },
-        { key: "mono", name: "Monocytes %", unit: "%", min: 2, max: 10, precision: 0 },
-        { key: "eos", name: "Eosinophils %", unit: "%", min: 1, max: 6, precision: 0 },
-        { key: "baso", name: "Basophils %", unit: "%", min: 0, max: 2, precision: 0 }
-      ]
+        "id": "test-cbc",
+        "code": "CBC",
+        "nameAr": "صورة دم كاملة (CBC)",
+        "nameEn": "Complete Blood Count & Diff",
+        "category": "أمراض الدم (Hematology)",
+        "tube": "EDTA (أنبوبة بنفسجي)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "wbc",
+                "name": "White Blood Cells (WBCs)",
+                "unit": "10^3/uL",
+                "min": 4.0,
+                "max": 11.0,
+                "precision": 1
+            },
+            {
+                "key": "rbc",
+                "name": "Red Blood Cells (RBCs)",
+                "unit": "10^6/uL",
+                "min": 4.5,
+                "max": 5.9,
+                "femaleMin": 4.0,
+                "femaleMax": 5.2,
+                "precision": 2
+            },
+            {
+                "key": "hb",
+                "name": "Hemoglobin (Hb)",
+                "unit": "g/dL",
+                "min": 13.0,
+                "max": 17.5,
+                "femaleMin": 12.0,
+                "femaleMax": 15.5,
+                "precision": 1
+            },
+            {
+                "key": "hct",
+                "name": "Hematocrit (HCT / PCV)",
+                "unit": "%",
+                "min": 40.0,
+                "max": 50.0,
+                "femaleMin": 36.0,
+                "femaleMax": 46.0,
+                "precision": 1
+            },
+            {
+                "key": "mcv",
+                "name": "Mean Corpuscular Volume (MCV)",
+                "unit": "fL",
+                "min": 80.0,
+                "max": 98.0,
+                "precision": 1
+            },
+            {
+                "key": "mch",
+                "name": "Mean Corpuscular Hb (MCH)",
+                "unit": "pg",
+                "min": 27.0,
+                "max": 33.0,
+                "precision": 1
+            },
+            {
+                "key": "mchc",
+                "name": "MCHC",
+                "unit": "g/dL",
+                "min": 32.0,
+                "max": 36.0,
+                "precision": 1
+            },
+            {
+                "key": "plt",
+                "name": "Platelet Count (PLT)",
+                "unit": "10^3/uL",
+                "min": 150,
+                "max": 450,
+                "precision": 0
+            }
+        ]
     },
     {
-      id: "test-esr",
-      code: "ESR",
-      nameAr: "سرعة الترسيب (الساعة الأولى والثانية)",
-      nameEn: "Erythrocyte Sedimentation Rate (ESR)",
-      category: "أمراض الدم (Hematology)",
-      tube: "Sodium Citrate (أنبوبة سوداء)",
-      price: 70,
-      parameters: [
-        { key: "esr_1hr", name: "ESR (1st Hour)", unit: "mm/hr", min: 0, max: 15, femaleMin: 0, femaleMax: 20, precision: 0 },
-        { key: "esr_2hr", name: "ESR (2nd Hour)", unit: "mm/hr", min: 0, max: 30, femaleMin: 0, femaleMax: 40, precision: 0 }
-      ]
+        "id": "test-rbg",
+        "code": "RBG",
+        "nameAr": "سكر عشوائي في الدم (RBG)",
+        "nameEn": "Random Blood Glucose",
+        "category": "السكري والتمثيل الغذائي (Diabetes)",
+        "tube": "Sodium Fluoride (أنبوبة رمادية)",
+        "price": 50,
+        "parameters": [
+            {
+                "key": "rbg",
+                "name": "Random Glucose",
+                "unit": "mg/dL",
+                "min": 70,
+                "max": 140,
+                "precision": 0
+            }
+        ]
     },
     {
-      id: "test-pt",
-      code: "PT-INR",
-      nameAr: "زمن ونسبة البروثرومبين ومعدل السيولة الدولي (PT / INR)",
-      nameEn: "Prothrombin Time & INR",
-      category: "أمراض الدم والتجلط (Coagulation)",
-      tube: "Sodium Citrate (أنبوبة زرقاء)",
-      price: 110,
-      parameters: [
-        { key: "pt_time", name: "Patient PT", unit: "Seconds", min: 11.0, max: 14.5, precision: 1 },
-        { key: "pt_control", name: "Control PT", unit: "Seconds", min: 12.0, max: 12.5, precision: 1 },
-        { key: "pt_conc", name: "Prothrombin Concentration", unit: "%", min: 70.0, max: 100.0, precision: 1 },
-        { key: "inr", name: "INR (International Normalized Ratio)", unit: "Ratio", min: 0.9, max: 1.2, precision: 2 }
-      ]
+        "id": "test-fbs",
+        "code": "FBS",
+        "nameAr": "سكر صائم في الدم (FBS)",
+        "nameEn": "Fasting Blood Sugar",
+        "category": "السكري والتمثيل الغذائي (Diabetes)",
+        "tube": "Sodium Fluoride (أنبوبة رمادية)",
+        "price": 50,
+        "parameters": [
+            {
+                "key": "fbs",
+                "name": "Fasting Glucose",
+                "unit": "mg/dL",
+                "min": 70,
+                "max": 100,
+                "precision": 0
+            }
+        ]
     },
     {
-      id: "test-ptt",
-      code: "PTT",
-      nameAr: "زمن الثرومبوبلاستين الجزئي (سيولة الدم)",
-      nameEn: "Partial Thromboplastin Time (aPTT)",
-      category: "أمراض الدم والتجلط (Coagulation)",
-      tube: "Sodium Citrate (أنبوبة زرقاء)",
-      price: 110,
-      parameters: [
-        { key: "ptt_patient", name: "Patient aPTT", unit: "Seconds", min: 26.0, max: 38.0, precision: 1 },
-        { key: "ptt_control", name: "Control aPTT", unit: "Seconds", min: 30.0, max: 32.0, precision: 1 }
-      ]
+        "id": "test-pp",
+        "code": "2H-PP",
+        "nameAr": "سكر بعد الأكل بساعتين (2H-PP)",
+        "nameEn": "2-Hours Post-Prandial Glucose",
+        "category": "السكري والتمثيل الغذائي (Diabetes)",
+        "tube": "Sodium Fluoride (أنبوبة رمادية)",
+        "price": 50,
+        "parameters": [
+            {
+                "key": "pp_sugar",
+                "name": "2-Hours Post Prandial",
+                "unit": "mg/dL",
+                "min": 70,
+                "max": 140,
+                "precision": 0
+            }
+        ]
     },
     {
-      id: "test-blood-group",
-      code: "ABO-RH",
-      nameAr: "فصيلة الدم وعامل ريسس (ABO & Rh Group)",
-      nameEn: "Blood Grouping & Rh Typing",
-      category: "أمراض الدم (Hematology)",
-      tube: "EDTA (أنبوبة موف)",
-      price: 60,
-      parameters: [
-        { key: "abo", name: "ABO Blood Group", unit: "", precision: 0 },
-        { key: "rh", name: "Rh Factor", unit: "", precision: 0 }
-      ]
+        "id": "test-hba1c",
+        "code": "HbA1c",
+        "nameAr": "السكر التراكمي (HbA1c)",
+        "nameEn": "Glycated Hemoglobin (HbA1c)",
+        "category": "السكري والتمثيل الغذائي (Diabetes)",
+        "tube": "EDTA (أنبوبة بنفسجي)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "hba1c",
+                "name": "Hemoglobin A1c",
+                "unit": "%",
+                "min": 4.5,
+                "max": 5.6,
+                "precision": 1
+            },
+            {
+                "key": "eag",
+                "name": "Estimated Average Glucose (eAG)",
+                "unit": "mg/dL",
+                "min": 83,
+                "max": 114,
+                "precision": 0
+            }
+        ]
     },
     {
-      id: "test-d-dimer",
-      code: "D-DIMER",
-      nameAr: "تحليل داي ديمر لتجلط الدم (D-Dimer Quantitative)",
-      nameEn: "D-Dimer Quantitative Assay",
-      category: "أمراض الدم والتجلط (Coagulation)",
-      tube: "Sodium Citrate (أنبوبة زرقاء)",
-      price: 280,
-      parameters: [
-        { key: "ddimer", name: "D-Dimer Level", unit: "ug/mL FEU", min: 0.0, max: 0.5, precision: 2 }
-      ]
-    },
-
-    // -------------------------------------------------------------
-    // كيمياء الدم ووظائف الكلى (Renal Function Tests)
-    // -------------------------------------------------------------
-    {
-      id: "test-creat",
-      code: "CREAT",
-      nameAr: "كرياتينين مصل الدم",
-      nameEn: "Serum Creatinine",
-      category: "وظائف الكلى (Renal Function)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 80,
-      parameters: [
-        { key: "creat", name: "Creatinine", unit: "mg/dL", min: 0.6, max: 1.2, femaleMin: 0.5, femaleMax: 1.0, precision: 2 }
-      ]
-    },
-    {
-      id: "test-urea",
-      code: "UREA",
-      nameAr: "بولينا الدم (Blood Urea)",
-      nameEn: "Blood Urea",
-      category: "وظائف الكلى (Renal Function)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 80,
-      parameters: [
-        { key: "urea", name: "Blood Urea", unit: "mg/dL", min: 15, max: 45, precision: 0 }
-      ]
-    },
-    {
-      id: "test-uric",
-      code: "UA",
-      nameAr: "حمض اليوريك (النقرس)",
-      nameEn: "Serum Uric Acid",
-      category: "وظائف الكلى (Renal Function)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 75,
-      parameters: [
-        { key: "uric", name: "Uric Acid", unit: "mg/dL", min: 3.5, max: 7.2, femaleMin: 2.6, femaleMax: 6.0, precision: 1 }
-      ]
-    },
-
-    // -------------------------------------------------------------
-    // وظائف الكبد والإنزيمات (Liver Function Tests)
-    // -------------------------------------------------------------
-    {
-      id: "test-alt",
-      code: "ALT",
-      nameAr: "إنزيم الكبد ALT / SGPT",
-      nameEn: "Alanine Aminotransferase (ALT/SGPT)",
-      category: "وظائف الكبد (Liver Function)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 85,
-      parameters: [
-        { key: "alt", name: "ALT (SGPT)", unit: "U/L", min: 0, max: 45, femaleMin: 0, femaleMax: 35, precision: 0 }
-      ]
+        "id": "test-urine",
+        "code": "URINE",
+        "nameAr": "تحليل البول الكامل (Urine Analysis)",
+        "nameEn": "Complete Urine Analysis",
+        "category": "المايكروبيولوجي والبول والبراز",
+        "tube": "Urine Cup (كوب معقم)",
+        "price": 50,
+        "parameters": [
+            {
+                "key": "urine_pus",
+                "name": "Pus Cells (WBCs)",
+                "unit": "HPF",
+                "min": 0,
+                "max": 5,
+                "precision": 0
+            },
+            {
+                "key": "urine_rbc",
+                "name": "Red Blood Cells (RBCs)",
+                "unit": "HPF",
+                "min": 0,
+                "max": 3,
+                "precision": 0
+            },
+            {
+                "key": "urine_alb",
+                "name": "Albumin / Protein",
+                "unit": "Qual",
+                "min": 0,
+                "max": 0,
+                "precision": 0
+            },
+            {
+                "key": "urine_sug",
+                "name": "Glucose / Sugar",
+                "unit": "Qual",
+                "min": 0,
+                "max": 0,
+                "precision": 0
+            }
+        ]
     },
     {
-      id: "test-ast",
-      code: "AST",
-      nameAr: "إنزيم الكبد AST / SGOT",
-      nameEn: "Aspartate Aminotransferase (AST/SGOT)",
-      category: "وظائف الكبد (Liver Function)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 85,
-      parameters: [
-        { key: "ast", name: "AST (SGOT)", unit: "U/L", min: 0, max: 40, femaleMin: 0, femaleMax: 32, precision: 0 }
-      ]
+        "id": "test-stool",
+        "code": "STOOL",
+        "nameAr": "تحليل البراز الكامل (Stool Analysis)",
+        "nameEn": "Complete Stool Analysis",
+        "category": "المايكروبيولوجي والبول والبراز",
+        "tube": "Stool Cup (كوب معقم)",
+        "price": 50,
+        "parameters": [
+            {
+                "key": "stool_pus",
+                "name": "Pus Cells (WBCs)",
+                "unit": "HPF",
+                "min": 0,
+                "max": 4,
+                "precision": 0
+            },
+            {
+                "key": "stool_rbc",
+                "name": "RBCs",
+                "unit": "HPF",
+                "min": 0,
+                "max": 2,
+                "precision": 0
+            },
+            {
+                "key": "stool_ova",
+                "name": "Parasites / Ova",
+                "unit": "Direct",
+                "min": 0,
+                "max": 0,
+                "precision": 0
+            }
+        ]
     },
     {
-      id: "test-bili",
-      code: "BIL-TOTAL-DIR",
-      nameAr: "الصفراء الكلية والمباشرة وغير المباشرة",
-      nameEn: "Total, Direct & Indirect Bilirubin",
-      category: "وظائف الكبد (Liver Function)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 95,
-      parameters: [
-        { key: "bili_tot", name: "Total Bilirubin", unit: "mg/dL", min: 0.2, max: 1.2, precision: 2 },
-        { key: "bili_dir", name: "Direct Bilirubin", unit: "mg/dL", min: 0.0, max: 0.3, precision: 2 },
-        { key: "bili_ind", name: "Indirect Bilirubin", unit: "mg/dL", min: 0.1, max: 0.9, precision: 2 }
-      ]
+        "id": "test-hpylori-stool",
+        "code": "H.PYLORI-AG",
+        "nameAr": "جرثومة المعدة في البراز (H.pylori Ag)",
+        "nameEn": "H. pylori Antigen in Stool",
+        "category": "المناعة والأمصال (Serology)",
+        "tube": "Stool Cup (كوب معقم)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "hpylori_result",
+                "name": "H. Pylori Antigen",
+                "unit": "Qualitative",
+                "min": 0,
+                "max": 0,
+                "precision": 0
+            }
+        ]
     },
     {
-      id: "test-alp",
-      code: "ALP",
-      nameAr: "الفوسفاتاز القلوي (Alkaline Phosphatase)",
-      nameEn: "Alkaline Phosphatase (ALP)",
-      category: "وظائف الكبد (Liver Function)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 90,
-      parameters: [
-        { key: "alp", name: "Alkaline Phosphatase", unit: "U/L", min: 44, max: 147, precision: 0 }
-      ]
+        "id": "test-bili",
+        "code": "BIL-T",
+        "nameAr": "الصفراء الكلية في الدم (Total Bilirubin)",
+        "nameEn": "Total Serum Bilirubin",
+        "category": "وظائف الكبد والإنزيمات (Hepatic)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 120,
+        "parameters": [
+            {
+                "key": "bili_tot",
+                "name": "Total Bilirubin",
+                "unit": "mg/dL",
+                "min": 0.2,
+                "max": 1.2,
+                "precision": 2
+            },
+            {
+                "key": "bili_dir",
+                "name": "Direct Bilirubin",
+                "unit": "mg/dL",
+                "min": 0.0,
+                "max": 0.3,
+                "precision": 2
+            }
+        ]
     },
     {
-      id: "test-albumin",
-      code: "ALB-TP",
-      nameAr: "البروتين الكلي والزلال ومعدل A/G",
-      nameEn: "Total Protein & Serum Albumin Panel",
-      category: "وظائف الكبد (Liver Function)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 100,
-      parameters: [
-        { key: "tp", name: "Total Protein", unit: "g/dL", min: 6.4, max: 8.3, precision: 1 },
-        { key: "alb", name: "Serum Albumin", unit: "g/dL", min: 3.5, max: 5.0, precision: 1 },
-        { key: "glob", name: "Globulin", unit: "g/dL", min: 2.3, max: 3.5, precision: 1 },
-        { key: "ag_ratio", name: "A/G Ratio", unit: "Ratio", min: 1.1, max: 2.2, precision: 2 }
-      ]
-    },
-
-    // -------------------------------------------------------------
-    // السكري ومؤشرات التمثيل الغذائي (Diabetes & Metabolism)
-    // -------------------------------------------------------------
-    {
-      id: "test-fbs",
-      code: "FBS",
-      nameAr: "سكر صائم في الدم (صيام 8 ساعات)",
-      nameEn: "Fasting Blood Sugar (FBS)",
-      category: "السكري والتمثيل الغذائي (Diabetes)",
-      tube: "Sodium Fluoride (أنبوبة رمادية)",
-      price: 60,
-      parameters: [
-        { key: "fbs", name: "Fasting Glucose", unit: "mg/dL", min: 70, max: 100, precision: 0 }
-      ]
+        "id": "test-pregnancy-qual",
+        "code": "PREG-QUAL",
+        "nameAr": "اختبار الحمل في الدم العادي (Pregnancy Qual)",
+        "nameEn": "Pregnancy in Serum Qual",
+        "category": "الهرمونات والغدد (Endocrinology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "preg_qual",
+                "name": "Pregnancy Test",
+                "unit": "Qualitative",
+                "min": 0,
+                "max": 0,
+                "precision": 0
+            }
+        ]
     },
     {
-      id: "test-pp",
-      code: "2H-PP",
-      nameAr: "سكر بعد الأكل بساعتين",
-      nameEn: "2-Hours Post-Prandial Blood Glucose",
-      category: "السكري والتمثيل الغذائي (Diabetes)",
-      tube: "Sodium Fluoride (أنبوبة رمادية)",
-      price: 60,
-      parameters: [
-        { key: "pp_sugar", name: "2-Hours Post Prandial", unit: "mg/dL", min: 70, max: 140, precision: 0 }
-      ]
+        "id": "test-bhcg",
+        "code": "BHCG",
+        "nameAr": "هرمون الحمل الرقمي (Beta-HCG Quantitative)",
+        "nameEn": "Quantitative Beta-hCG Pregnancy",
+        "category": "الهرمونات والغدد (Endocrinology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "bhcg_val",
+                "name": "Beta-hCG",
+                "unit": "mIU/mL",
+                "min": 0,
+                "max": 5,
+                "precision": 1
+            }
+        ]
     },
     {
-      id: "test-hba1c",
-      code: "HbA1c",
-      nameAr: "السكر التراكمي ومعدل متوسط السكر (HbA1c & eAG)",
-      nameEn: "Glycated Hemoglobin (HbA1c)",
-      category: "السكري والتمثيل الغذائي (Diabetes)",
-      tube: "EDTA (أنبوبة موف)",
-      price: 160,
-      parameters: [
-        { key: "hba1c", name: "Hemoglobin A1c", unit: "%", min: 4.5, max: 5.6, precision: 1 },
-        { key: "eag", name: "Estimated Average Glucose (eAG)", unit: "mg/dL", min: 83, max: 114, precision: 0 }
-      ]
-    },
-
-    // -------------------------------------------------------------
-    // ملف الدهون وصحة القلب (Lipid Profile Panel)
-    // -------------------------------------------------------------
-    {
-      id: "test-lipid",
-      code: "LIPID",
-      nameAr: "ملف الدهون الكامل (الكولسترول، الدهون الثلاثية، النافع والضار)",
-      nameEn: "Complete Lipid Profile Panel",
-      category: "الدهون وصحة القلب (Lipids)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 240,
-      parameters: [
-        { key: "chol", name: "Total Cholesterol", unit: "mg/dL", min: 120, max: 200, precision: 0 },
-        { key: "trig", name: "Triglycerides", unit: "mg/dL", min: 50, max: 150, precision: 0 },
-        { key: "hdl", name: "HDL-Cholesterol (Good)", unit: "mg/dL", min: 40, max: 65, femaleMin: 50, femaleMax: 75, precision: 0 },
-        { key: "ldl", name: "LDL-Cholesterol (Bad)", unit: "mg/dL", min: 60, max: 130, precision: 0 },
-        { key: "vldl", name: "VLDL-Cholesterol", unit: "mg/dL", min: 10, max: 30, precision: 0 },
-        { key: "chol_hdl", name: "Risk Ratio (Chol/HDL)", unit: "Ratio", min: 2.5, max: 4.5, precision: 1 }
-      ]
-    },
-
-    // -------------------------------------------------------------
-    // هرمونات الغدة الدرقية والغدد الصماء (Thyroid & Endocrinology)
-    // -------------------------------------------------------------
-    {
-      id: "test-tsh",
-      code: "TSH-ULTRA",
-      nameAr: "هرمون الغدة الدرقية فائق الحساسية (TSH Ultrasensitive)",
-      nameEn: "Thyroid Stimulating Hormone (TSH)",
-      category: "الهرمونات والغدد (Endocrinology)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 150,
-      parameters: [
-        { key: "tsh", name: "TSH Ultrasensitive", unit: "uIU/mL", min: 0.35, max: 4.94, precision: 2 }
-      ]
+        "id": "test-uric",
+        "code": "URIC",
+        "nameAr": "حمض البوليك / أملاح النقرس (Uric Acid)",
+        "nameEn": "Serum Uric Acid",
+        "category": "وظائف الكلى والأملاح (Renal)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "uric_acid",
+                "name": "Serum Uric Acid",
+                "unit": "mg/dL",
+                "min": 3.5,
+                "max": 7.2,
+                "femaleMin": 2.6,
+                "femaleMax": 6.0,
+                "precision": 1
+            }
+        ]
     },
     {
-      id: "test-ft4",
-      code: "FT4",
-      nameAr: "هرمون الثيروكسين الحر (Free T4)",
-      nameEn: "Free Thyroxine (FT4)",
-      category: "الهرمونات والغدد (Endocrinology)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 150,
-      parameters: [
-        { key: "ft4", name: "Free T4", unit: "ng/dL", min: 0.93, max: 1.70, precision: 2 }
-      ]
+        "id": "test-creat",
+        "code": "CREAT",
+        "nameAr": "كرياتينين في الدم (Creatinine)",
+        "nameEn": "Serum Creatinine",
+        "category": "وظائف الكلى والأملاح (Renal)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "creat",
+                "name": "Creatinine",
+                "unit": "mg/dL",
+                "min": 0.7,
+                "max": 1.3,
+                "femaleMin": 0.5,
+                "femaleMax": 1.1,
+                "precision": 2
+            }
+        ]
     },
     {
-      id: "test-ft3",
-      code: "FT3",
-      nameAr: "هرمون التراي يودوثيرونين الحر (Free T3)",
-      nameEn: "Free Triiodothyronine (FT3)",
-      category: "الهرمونات والغدد (Endocrinology)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 150,
-      parameters: [
-        { key: "ft3", name: "Free T3", unit: "pg/mL", min: 2.0, max: 4.4, precision: 2 }
-      ]
-    },
-
-    // -------------------------------------------------------------
-    // الفيتامينات والمعادن ومخزون الحديد (Vitamins & Trace Elements)
-    // -------------------------------------------------------------
-    {
-      id: "test-vitd",
-      code: "VIT-D3",
-      nameAr: "فيتامين د الكلي (25-OH Vitamin D Total)",
-      nameEn: "25-Hydroxy Vitamin D Total",
-      category: "الفيتامينات والمعادن (Vitamins)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 320,
-      parameters: [
-        { key: "vitd", name: "Vitamin D (25-OH)", unit: "ng/mL", min: 30.0, max: 100.0, precision: 1 }
-      ]
+        "id": "test-urea",
+        "code": "UREA",
+        "nameAr": "بولينا في الدم (Blood Urea)",
+        "nameEn": "Blood Urea",
+        "category": "وظائف الكلى والأملاح (Renal)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "urea",
+                "name": "Blood Urea",
+                "unit": "mg/dL",
+                "min": 15,
+                "max": 45,
+                "precision": 0
+            }
+        ]
     },
     {
-      id: "test-ferritin",
-      code: "FERRITIN",
-      nameAr: "مخزون الحديد في الدم (Serum Ferritin)",
-      nameEn: "Serum Ferritin Level",
-      category: "الفيتامينات والمعادن (Vitamins)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 180,
-      parameters: [
-        { key: "ferritin", name: "Ferritin", unit: "ng/mL", min: 30, max: 400, femaleMin: 15, femaleMax: 200, precision: 1 }
-      ]
+        "id": "test-ast",
+        "code": "AST",
+        "nameAr": "إنزيم كبد AST (SGOT)",
+        "nameEn": "Aspartate Aminotransferase (AST)",
+        "category": "وظائف الكبد والإنزيمات (Hepatic)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "ast",
+                "name": "AST (SGOT)",
+                "unit": "U/L",
+                "min": 0,
+                "max": 40,
+                "precision": 0
+            }
+        ]
     },
     {
-      id: "test-calcium",
-      code: "CA-TOTAL",
-      nameAr: "الكالسيوم الكلي في الدم",
-      nameEn: "Total Serum Calcium",
-      category: "الأملاح والمعادن (Electrolytes)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 70,
-      parameters: [
-        { key: "calcium", name: "Total Calcium", unit: "mg/dL", min: 8.5, max: 10.5, precision: 1 }
-      ]
-    },
-
-    // -------------------------------------------------------------
-    // المناعة والأملاح ودلالات الالتهاب (Immunology & Electrolytes)
-    // -------------------------------------------------------------
-    {
-      id: "test-crp",
-      code: "CRP-QUANT",
-      nameAr: "بروتين سي التفاعلي كمي (CRP Quantitative)",
-      nameEn: "C-Reactive Protein (Quantitative)",
-      category: "المناعة والأمصال (Immunology)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 120,
-      parameters: [
-        { key: "crp", name: "CRP Quantitative", unit: "mg/L", min: 0.0, max: 6.0, precision: 1 }
-      ]
+        "id": "test-alt",
+        "code": "ALT",
+        "nameAr": "إنزيم كبد ALT (SGPT)",
+        "nameEn": "Alanine Aminotransferase (ALT)",
+        "category": "وظائف الكبد والإنزيمات (Hepatic)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "alt",
+                "name": "ALT (SGPT)",
+                "unit": "U/L",
+                "min": 0,
+                "max": 41,
+                "precision": 0
+            }
+        ]
     },
     {
-      id: "test-electrolytes",
-      code: "NA-K",
-      nameAr: "أملاح الدم (الصوديوم والبوتاسيوم)",
-      nameEn: "Serum Electrolytes (Na+ / K+)",
-      category: "الأملاح والمعادن (Electrolytes)",
-      tube: "Serum Clot Activator (أنبوبة صفراء جل)",
-      price: 140,
-      parameters: [
-        { key: "na", name: "Sodium (Na+)", unit: "mEq/L", min: 135, max: 148, precision: 0 },
-        { key: "k", name: "Potassium (K+)", unit: "mEq/L", min: 3.5, max: 5.1, precision: 1 }
-      ]
+        "id": "test-albumin",
+        "code": "ALB",
+        "nameAr": "ألبومين في الدم (Serum Albumin)",
+        "nameEn": "Serum Albumin",
+        "category": "وظائف الكبد والإنزيمات (Hepatic)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "albumin",
+                "name": "Albumin",
+                "unit": "g/dL",
+                "min": 3.5,
+                "max": 5.2,
+                "precision": 1
+            }
+        ]
     },
-
-    // -------------------------------------------------------------
-    // الفحص الميكروسكوبي للبول (Complete Urinalysis)
-    // -------------------------------------------------------------
     {
-      id: "test-urine",
-      code: "URINE",
-      nameAr: "تحليل البول الكامل الميكروسكوبي والكيميائي",
-      nameEn: "Complete Urinalysis (Physical, Chemical & Microscopic)",
-      category: "الفحص الميكروسكوبي (Clinical Microscopy)",
-      tube: "Sterile Urine Cup (كوب بول معقم)",
-      price: 60,
-      parameters: [
-        { key: "u_color", name: "Color (اللون)", unit: "", precision: 0 },
-        { key: "u_aspect", name: "Aspect (المظهر والشفافية)", unit: "", precision: 0 },
-        { key: "u_sg", name: "Specific Gravity (الكثافة النوعية)", unit: "", min: 1.015, max: 1.025, precision: 3 },
-        { key: "u_ph", name: "Reaction (pH)", unit: "", min: 5.0, max: 7.5, precision: 1 },
-        { key: "u_alb", name: "Protein / Albumin", unit: "", precision: 0 },
-        { key: "u_sug", name: "Sugar / Glucose", unit: "", precision: 0 },
-        { key: "u_pus", name: "Pus Cells (خلايا الصديد)", unit: "/HPF", min: 0, max: 5, precision: 0 },
-        { key: "u_rbc", name: "RBCs (كرات الدم الحمراء)", unit: "/HPF", min: 0, max: 3, precision: 0 },
-        { key: "u_cryst", name: "Crystals (الأملاح والبلورات)", unit: "", precision: 0 }
-      ]
+        "id": "test-protein",
+        "code": "TP",
+        "nameAr": "بروتين كلي في الدم (Total Protein)",
+        "nameEn": "Total Serum Protein",
+        "category": "وظائف الكبد والإنزيمات (Hepatic)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "protein",
+                "name": "Total Protein",
+                "unit": "g/dL",
+                "min": 6.4,
+                "max": 8.3,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-lipid",
+        "code": "LIPID",
+        "nameAr": "ملف الدهون الكامل والكولسترول (Lipid Profile)",
+        "nameEn": "Complete Lipid Profile Panel",
+        "category": "الدهون وصحة القلب (Lipids)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 280,
+        "parameters": [
+            {
+                "key": "chol",
+                "name": "Total Cholesterol",
+                "unit": "mg/dL",
+                "min": 120,
+                "max": 200,
+                "precision": 0
+            },
+            {
+                "key": "trig",
+                "name": "Triglycerides",
+                "unit": "mg/dL",
+                "min": 50,
+                "max": 150,
+                "precision": 0
+            },
+            {
+                "key": "hdl",
+                "name": "HDL-Cholesterol",
+                "unit": "mg/dL",
+                "min": 40,
+                "max": 65,
+                "precision": 0
+            },
+            {
+                "key": "ldl",
+                "name": "LDL-Cholesterol",
+                "unit": "mg/dL",
+                "min": 60,
+                "max": 130,
+                "precision": 0
+            },
+            {
+                "key": "vldl",
+                "name": "VLDL-Cholesterol",
+                "unit": "mg/dL",
+                "min": 10,
+                "max": 30,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-tsh",
+        "code": "TSH",
+        "nameAr": "هرمون الغدة الدرقية (TSH)",
+        "nameEn": "Thyroid Stimulating Hormone",
+        "category": "الهرمونات والغدد (Endocrinology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "tsh",
+                "name": "TSH Ultrasensitive",
+                "unit": "uIU/mL",
+                "min": 0.4,
+                "max": 4.2,
+                "precision": 2
+            }
+        ]
+    },
+    {
+        "id": "test-fsh",
+        "code": "FSH",
+        "nameAr": "هرمون تنشيط الحويصلات (FSH)",
+        "nameEn": "Follicle Stimulating Hormone",
+        "category": "الهرمونات والغدد (Endocrinology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "fsh",
+                "name": "FSH Hormone",
+                "unit": "mIU/mL",
+                "min": 1.5,
+                "max": 12.4,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-lh",
+        "code": "LH",
+        "nameAr": "الهرمون الملوتن (LH)",
+        "nameEn": "Luteinizing Hormone (LH)",
+        "category": "الهرمونات والغدد (Endocrinology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "lh",
+                "name": "LH Hormone",
+                "unit": "mIU/mL",
+                "min": 1.7,
+                "max": 8.6,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-t3",
+        "code": "T3",
+        "nameAr": "هرمون الغدة الدرقية الكلي (Total T3)",
+        "nameEn": "Total Triiodothyronine (T3)",
+        "category": "الهرمونات والغدد (Endocrinology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "t3",
+                "name": "Total T3",
+                "unit": "ng/mL",
+                "min": 0.8,
+                "max": 2.0,
+                "precision": 2
+            }
+        ]
+    },
+    {
+        "id": "test-t4",
+        "code": "T4",
+        "nameAr": "هرمون الثيروكسين الكلي (Total T4)",
+        "nameEn": "Total Thyroxine (T4)",
+        "category": "الهرمونات والغدد (Endocrinology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "t4",
+                "name": "Total T4",
+                "unit": "ug/dL",
+                "min": 5.1,
+                "max": 14.1,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-ft3",
+        "code": "FT3",
+        "nameAr": "هرمون الغدة الدرقية الحر (Free T3)",
+        "nameEn": "Free Triiodothyronine (FT3)",
+        "category": "الهرمونات والغدد (Endocrinology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "ft3",
+                "name": "Free T3",
+                "unit": "pg/mL",
+                "min": 2.0,
+                "max": 4.4,
+                "precision": 2
+            }
+        ]
+    },
+    {
+        "id": "test-ft4",
+        "code": "FT4",
+        "nameAr": "هرمون الثيروكسين الحر (Free T4)",
+        "nameEn": "Free Thyroxine (FT4)",
+        "category": "الهرمونات والغدد (Endocrinology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "ft4",
+                "name": "Free T4",
+                "unit": "ng/dL",
+                "min": 0.93,
+                "max": 1.7,
+                "precision": 2
+            }
+        ]
+    },
+    {
+        "id": "test-urine-culture",
+        "code": "URINE-CULT",
+        "nameAr": "مزرعة وحساسية ميكروبية للبول (Urine Culture)",
+        "nameEn": "Urine Culture & Sensitivity",
+        "category": "المايكروبيولوجي والبول والبراز",
+        "tube": "Sterile Container (علبة معقمة)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "cult_growth",
+                "name": "Microbial Growth",
+                "unit": "CFU/mL",
+                "min": 0,
+                "max": 10000,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-crp",
+        "code": "CRP",
+        "nameAr": "البروتين المتفاعل C (الالتهابات)",
+        "nameEn": "C-Reactive Protein (CRP)",
+        "category": "المناعة والأمصال (Serology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "crp",
+                "name": "C-Reactive Protein",
+                "unit": "mg/L",
+                "min": 0,
+                "max": 6.0,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-asot",
+        "code": "ASOT",
+        "nameAr": "سرعة التهاب اللوز والمكورات (ASOT)",
+        "nameEn": "Anti-Streptolysin O Titre",
+        "category": "المناعة والأمصال (Serology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "asot",
+                "name": "ASOT Titre",
+                "unit": "IU/mL",
+                "min": 0,
+                "max": 200,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-rf",
+        "code": "RF",
+        "nameAr": "معامل الروماتويد (RF)",
+        "nameEn": "Rheumatoid Factor (RF)",
+        "category": "المناعة والأمصال (Serology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "rf",
+                "name": "Rheumatoid Factor",
+                "unit": "IU/mL",
+                "min": 0,
+                "max": 8,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-esr",
+        "code": "ESR",
+        "nameAr": "سرعة الترسيب (ESR)",
+        "nameEn": "Erythrocyte Sedimentation Rate",
+        "category": "أمراض الدم (Hematology)",
+        "tube": "Sodium Citrate (أنبوبة سوداء)",
+        "price": 60,
+        "parameters": [
+            {
+                "key": "esr_1hr",
+                "name": "ESR (1st Hour)",
+                "unit": "mm/hr",
+                "min": 0,
+                "max": 15,
+                "femaleMin": 0,
+                "femaleMax": 20,
+                "precision": 0
+            },
+            {
+                "key": "esr_2hr",
+                "name": "ESR (2nd Hour)",
+                "unit": "mm/hr",
+                "min": 0,
+                "max": 30,
+                "femaleMin": 0,
+                "femaleMax": 35,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-pt",
+        "code": "PT",
+        "nameAr": "سيولة دم وزمن البروثرومبين (PT / INR)",
+        "nameEn": "Prothrombin Time & INR",
+        "category": "أمراض الدم (Hematology)",
+        "tube": "Sodium Citrate (أنبوبة زرقاء)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "pt_time",
+                "name": "PT (Patient Time)",
+                "unit": "Seconds",
+                "min": 11.0,
+                "max": 13.5,
+                "precision": 1
+            },
+            {
+                "key": "inr",
+                "name": "INR",
+                "unit": "Ratio",
+                "min": 0.8,
+                "max": 1.2,
+                "precision": 2
+            }
+        ]
+    },
+    {
+        "id": "test-ptt",
+        "code": "PTT",
+        "nameAr": "زمن الثرومبوبلاستين الجزئي (aPTT)",
+        "nameEn": "Activated Partial Thromboplastin Time",
+        "category": "أمراض الدم (Hematology)",
+        "tube": "Sodium Citrate (أنبوبة زرقاء)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "aptt_time",
+                "name": "aPTT (Patient Time)",
+                "unit": "Seconds",
+                "min": 25.0,
+                "max": 35.0,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-ct",
+        "code": "CT",
+        "nameAr": "زمن ومعدل التجلط (Clotting Time)",
+        "nameEn": "Clotting Time (CT)",
+        "category": "أمراض الدم (Hematology)",
+        "tube": "Plain Glass Tube",
+        "price": 50,
+        "parameters": [
+            {
+                "key": "ct_val",
+                "name": "Clotting Time",
+                "unit": "Minutes",
+                "min": 5,
+                "max": 11,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-bt",
+        "code": "BT",
+        "nameAr": "زمن ومعدل النزف (Bleeding Time)",
+        "nameEn": "Bleeding Time (BT)",
+        "category": "أمراض الدم (Hematology)",
+        "tube": "Capillary Tube",
+        "price": 50,
+        "parameters": [
+            {
+                "key": "bt_val",
+                "name": "Bleeding Time",
+                "unit": "Minutes",
+                "min": 1,
+                "max": 4,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-hcv",
+        "code": "HCV",
+        "nameAr": "أجسام مضادة لفيروس سي (Anti-HCV)",
+        "nameEn": "Hepatitis C Virus Antibody",
+        "category": "الفيروسات والمناعة (Virology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 120,
+        "parameters": [
+            {
+                "key": "hcv_res",
+                "name": "Anti-HCV Antibody",
+                "unit": "Qualitative",
+                "min": 0,
+                "max": 0,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-hbsag",
+        "code": "HBsAg",
+        "nameAr": "فيروس بي السطحي (HBsAg)",
+        "nameEn": "Hepatitis B Surface Antigen",
+        "category": "الفيروسات والمناعة (Virology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 120,
+        "parameters": [
+            {
+                "key": "hbsag_res",
+                "name": "HBsAg",
+                "unit": "Qualitative",
+                "min": 0,
+                "max": 0,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-hiv",
+        "code": "HIV",
+        "nameAr": "تحليل الإيدز (HIV 1 & 2)",
+        "nameEn": "Human Immunodeficiency Virus (HIV)",
+        "category": "الفيروسات والمناعة (Virology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 120,
+        "parameters": [
+            {
+                "key": "hiv_res",
+                "name": "HIV 1/2 Antibodies",
+                "unit": "Qualitative",
+                "min": 0,
+                "max": 0,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-pcr-hcv",
+        "code": "PCR-HCV",
+        "nameAr": "كشف فيروس C كمي بالـ PCR",
+        "nameEn": "HCV RNA Quantitative PCR",
+        "category": "البيولوجيا الجزيئية (Molecular / PCR)",
+        "tube": "EDTA (أنبوبة بنفسجي)",
+        "price": 400,
+        "parameters": [
+            {
+                "key": "pcr_hcv",
+                "name": "HCV Viral Load",
+                "unit": "IU/mL",
+                "min": 0,
+                "max": 15,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-pcr-hbv",
+        "code": "PCR-HBV",
+        "nameAr": "كشف فيروس B كمي بالـ PCR",
+        "nameEn": "HBV DNA Quantitative PCR",
+        "category": "البيولوجيا الجزيئية (Molecular / PCR)",
+        "tube": "EDTA (أنبوبة بنفسجي)",
+        "price": 400,
+        "parameters": [
+            {
+                "key": "pcr_hbv",
+                "name": "HBV Viral Load",
+                "unit": "IU/mL",
+                "min": 0,
+                "max": 10,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-vitd",
+        "code": "VIT-D",
+        "nameAr": "فيتامين د الكلي في الدم (Vitamin D)",
+        "nameEn": "25-Hydroxy Vitamin D Total",
+        "category": "الهرمونات والغدد (Endocrinology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 400,
+        "parameters": [
+            {
+                "key": "vitd_val",
+                "name": "25-OH Vitamin D",
+                "unit": "ng/mL",
+                "min": 30.0,
+                "max": 100.0,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-blood-group",
+        "code": "ABO",
+        "nameAr": "فصيلة الدم وعامل ريسس (ABO & Rh)",
+        "nameEn": "Blood Grouping (ABO & Rh Factor)",
+        "category": "أمراض الدم (Hematology)",
+        "tube": "EDTA (أنبوبة بنفسجي)",
+        "price": 80,
+        "parameters": [
+            {
+                "key": "abo_group",
+                "name": "ABO Group",
+                "unit": "Type",
+                "min": 0,
+                "max": 0,
+                "precision": 0
+            },
+            {
+                "key": "rh_factor",
+                "name": "Rh Factor (D Antigen)",
+                "unit": "Type",
+                "min": 0,
+                "max": 0,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-ferritin",
+        "code": "FERRITIN",
+        "nameAr": "مخزون الحديد في الدم (Serum Ferritin)",
+        "nameEn": "Serum Ferritin",
+        "category": "أمراض الدم (Hematology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 250,
+        "parameters": [
+            {
+                "key": "ferritin",
+                "name": "Serum Ferritin",
+                "unit": "ng/mL",
+                "min": 30.0,
+                "max": 400.0,
+                "femaleMin": 13.0,
+                "femaleMax": 150.0,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-drugs",
+        "code": "DRUGS-PANEL",
+        "nameAr": "تحليل مخدرات متعدد (Drug Screen Panel)",
+        "nameEn": "Multi-Drug Abuse Screen Panel",
+        "category": "السموم والمخدرات (Toxicology)",
+        "tube": "Urine Cup (كوب معقم)",
+        "price": 300,
+        "parameters": [
+            {
+                "key": "thc",
+                "name": "THC (Cannabis / الحشيش)",
+                "unit": "Qual",
+                "min": 0,
+                "max": 0,
+                "precision": 0
+            },
+            {
+                "key": "opi",
+                "name": "Opiates (المورفين والأفيونات)",
+                "unit": "Qual",
+                "min": 0,
+                "max": 0,
+                "precision": 0
+            },
+            {
+                "key": "tml",
+                "name": "Tramadol (الترامادول)",
+                "unit": "Qual",
+                "min": 0,
+                "max": 0,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-amyloid-a",
+        "code": "SAA",
+        "nameAr": "تحليل بروتين أميلويد A (Amyloid A Protein)",
+        "nameEn": "Serum Amyloid A Protein (SAA)",
+        "category": "المناعة والأمصال (Serology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 300,
+        "parameters": [
+            {
+                "key": "saa_val",
+                "name": "Serum Amyloid A",
+                "unit": "mg/L",
+                "min": 0,
+                "max": 10.0,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-widal",
+        "code": "WIDAL",
+        "nameAr": "حمى التيفود والباراتيفود (Widal Test)",
+        "nameEn": "Widal Agglutination Test",
+        "category": "المناعة والأمصال (Serology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "widal_to",
+                "name": "S. Typhi O Antigen",
+                "unit": "Titre",
+                "min": 0,
+                "max": 80,
+                "precision": 0
+            },
+            {
+                "key": "widal_th",
+                "name": "S. Typhi H Antigen",
+                "unit": "Titre",
+                "min": 0,
+                "max": 80,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-anemia-hb",
+        "code": "HB",
+        "nameAr": "تحليل أنيميا أو هيموجلوبين في الدم (Hb)",
+        "nameEn": "Hemoglobin (Hb)",
+        "category": "أمراض الدم (Hematology)",
+        "tube": "EDTA (أنبوبة بنفسجي)",
+        "price": 100,
+        "parameters": [
+            {
+                "key": "hb_isolated",
+                "name": "Hemoglobin Concentration",
+                "unit": "g/dL",
+                "min": 13.0,
+                "max": 17.5,
+                "femaleMin": 12.0,
+                "femaleMax": 15.5,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-prolactin",
+        "code": "PROLACTIN",
+        "nameAr": "هرمون اللبن (Prolactin)",
+        "nameEn": "Serum Prolactin Hormone",
+        "category": "الهرمونات والغدد (Endocrinology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "prolactin",
+                "name": "Prolactin",
+                "unit": "ng/mL",
+                "min": 4.0,
+                "max": 15.2,
+                "femaleMin": 4.8,
+                "femaleMax": 23.3,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-amh",
+        "code": "AMH",
+        "nameAr": "هرمون مخزون المبيض (AMH)",
+        "nameEn": "Anti-Müllerian Hormone (AMH)",
+        "category": "الهرمونات والغدد (Endocrinology)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 500,
+        "parameters": [
+            {
+                "key": "amh_val",
+                "name": "AMH Hormone",
+                "unit": "ng/mL",
+                "min": 1.0,
+                "max": 4.0,
+                "precision": 2
+            }
+        ]
+    },
+    {
+        "id": "test-semen",
+        "code": "SEMEN",
+        "nameAr": "فحص السائل المنوي الشامل (Semen Analysis)",
+        "nameEn": "Complete Semen Analysis",
+        "category": "المايكروبيولوجي والبول والبراز",
+        "tube": "Sterile Container (علبة معقمة)",
+        "price": 200,
+        "parameters": [
+            {
+                "key": "semen_vol",
+                "name": "Volume",
+                "unit": "mL",
+                "min": 1.5,
+                "max": 5.0,
+                "precision": 1
+            },
+            {
+                "key": "semen_count",
+                "name": "Sperm Count",
+                "unit": "Million/mL",
+                "min": 15,
+                "max": 200,
+                "precision": 0
+            },
+            {
+                "key": "semen_motility",
+                "name": "Total Motility (PR+NP)",
+                "unit": "%",
+                "min": 40,
+                "max": 100,
+                "precision": 0
+            }
+        ]
+    },
+    {
+        "id": "test-g6pd",
+        "code": "G6PD",
+        "nameAr": "أنيميا الفول (G6PD Enzyme)",
+        "nameEn": "Glucose-6-Phosphate Dehydrogenase",
+        "category": "أمراض الدم (Hematology)",
+        "tube": "EDTA (أنبوبة بنفسجي)",
+        "price": 300,
+        "parameters": [
+            {
+                "key": "g6pd_act",
+                "name": "G6PD Activity",
+                "unit": "U/g Hb",
+                "min": 8.0,
+                "max": 18.0,
+                "precision": 1
+            }
+        ]
+    },
+    {
+        "id": "test-calcium",
+        "code": "CALCIUM",
+        "nameAr": "كالسيوم توتال في الدم (Calcium Total)",
+        "nameEn": "Total Serum Calcium",
+        "category": "كيمياء الدم العامة (Clinical Chemistry)",
+        "tube": "Serum Clot Activator (أنبوبة صفراء جل)",
+        "price": 150,
+        "parameters": [
+            {
+                "key": "calcium_val",
+                "name": "Total Calcium",
+                "unit": "mg/dL",
+                "min": 8.5,
+                "max": 10.5,
+                "precision": 1
+            }
+        ]
     }
-  ],
-
+],
   // 2. باقات الفحص الشاملة الحقيقية المعتمدة في المختبرات
   packages: [
     {
