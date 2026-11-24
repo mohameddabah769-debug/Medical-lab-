@@ -3,7 +3,7 @@
  * محرك إدارة الحالة المركزي والتخزين الفوري (State Management & Persistence Store)
  */
 
-const STORAGE_KEY = "LABCORE_CLINICAL_DATABASE_V4";
+const STORAGE_KEY = "LABCORE_CLINICAL_DATABASE_V5";
 
 class LabStore {
   constructor() {
@@ -338,6 +338,76 @@ class LabStore {
     this.state.labProfile = { ...this.state.labProfile, ...profileData };
     this.save();
     return this.state.labProfile;
+  }
+
+  // ==========================================
+  // فريق العمل والصلاحيات (Staff & RBAC)
+  // ==========================================
+  getCurrentUser() {
+    const currentId = this.state.currentUserId || "STAFF-101";
+    return (this.state.staff || []).find(s => s.id === currentId) || (this.state.staff && this.state.staff[0]) || {
+      id: "STAFF-101",
+      name: "أ.د. شريف عبد الوهاب",
+      role: "director"
+    };
+  }
+
+  getCurrentRole() {
+    const user = this.getCurrentUser();
+    if (!user) return null;
+    return (this.state.roles || []).find(r => r.id === user.role) || {
+      id: user.role,
+      title: "مدير المختبر",
+      permissions: ["dashboard", "reception", "catalog", "results", "validate_results", "medical-report", "finance", "settings", "staff"]
+    };
+  }
+
+  hasPermission(permKey) {
+    const role = this.getCurrentRole();
+    if (!role || !role.permissions) return true;
+    return role.permissions.includes(permKey);
+  }
+
+  switchUser(staffId) {
+    const staff = (this.state.staff || []).find(s => s.id === staffId);
+    if (!staff) return false;
+    this.state.currentUserId = staffId;
+    this.save();
+    return staff;
+  }
+
+  addStaff(staffData) {
+    if (!this.state.staff) this.state.staff = [];
+    const nextNum = this.state.staff.length + 101;
+    const newMember = {
+      id: `STAFF-${nextNum}`,
+      name: staffData.name.trim(),
+      username: staffData.username.trim().toLowerCase(),
+      role: staffData.role || "technician",
+      phone: staffData.phone ? staffData.phone.trim() : "",
+      email: staffData.email ? staffData.email.trim() : "",
+      status: "active",
+      joinedDate: new Date().toISOString().split("T")[0]
+    };
+    this.state.staff.push(newMember);
+    this.save();
+    return newMember;
+  }
+
+  updateStaff(id, data) {
+    const member = (this.state.staff || []).find(s => s.id === id);
+    if (!member) return false;
+    Object.assign(member, data);
+    this.save();
+    return member;
+  }
+
+  toggleStaffStatus(id) {
+    const member = (this.state.staff || []).find(s => s.id === id);
+    if (!member) return false;
+    member.status = member.status === "active" ? "inactive" : "active";
+    this.save();
+    return member;
   }
 
   // ==========================================

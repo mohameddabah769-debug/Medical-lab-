@@ -727,5 +727,79 @@ window.SEED_DATA = {
       date: "2026-11-22",
       notes: "كيتس هرمونات لـ 200 اختبار"
     }
-  ]
+  ],
+
+  // 7. أدوار وصلاحيات فريق العمل (Staff Roles & Permissions)
+  roles: [
+    {
+      id: "director",
+      title: "مدير المختبر / الطبيب الاستشاري",
+      color: "var(--primary)",
+      permissions: ["dashboard", "reception", "catalog", "results", "validate_results", "medical-report", "finance", "settings", "staff"]
+    },
+    {
+      id: "technician",
+      title: "أخصائي تحاليل / فني معمل",
+      color: "#059669",
+      permissions: ["dashboard", "catalog", "results", "medical-report"]
+    },
+    {
+      id: "receptionist",
+      title: "مسؤول استقبال وخدمة عملاء",
+      color: "#d97706",
+      permissions: ["dashboard", "reception", "medical-report"]
+    },
+    {
+      id: "accountant",
+      title: "محاسب ومسؤول الخزينة",
+      color: "#7c3aed",
+      permissions: ["dashboard", "finance", "reception"]
+    }
+  ],
+
+  // 8. أعضاء فريق العمل المسجلين
+  staff: [
+    {
+      id: "STAFF-101",
+      name: "أ.د. شريف عبد الوهاب المراكبي",
+      username: "dr_sherif",
+      role: "director",
+      phone: "01005544332",
+      email: "dr.sherif@royallab-eg.com",
+      status: "active",
+      joinedDate: "2024-01-15"
+    },
+    {
+      id: "STAFF-102",
+      name: "د. كريم ممدوح النجار",
+      username: "kareem_lab",
+      role: "technician",
+      phone: "01145678901",
+      email: "kareem.chem@royallab-eg.com",
+      status: "active",
+      joinedDate: "2024-03-01"
+    },
+    {
+      id: "STAFF-103",
+      name: "أ. دينا سامي محمود",
+      username: "dina_reception",
+      role: "receptionist",
+      phone: "01234567812",
+      email: "dina.sami@royallab-eg.com",
+      status: "active",
+      joinedDate: "2024-05-10"
+    },
+    {
+      id: "STAFF-104",
+      name: "أ. طارق مصطفى العوضي",
+      username: "tarek_finance",
+      role: "accountant",
+      phone: "01098765432",
+      email: "tarek.finance@royallab-eg.com",
+      status: "active",
+      joinedDate: "2024-06-20"
+    }
+  ],
+
+  currentUserId: "STAFF-101"
 };

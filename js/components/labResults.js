@@ -206,10 +206,12 @@ window.LabResultsComponent = {
                       </div>
                     </div>
                     <div style="display:flex; gap:10px;">
-                      <button type="button" id="btn-unvalidate-order" class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger);">
-                        <i data-lucide="unlock"></i>
-                        <span>فك الاعتماد للتعديل</span>
-                      </button>
+                      ${window.store.hasPermission("validate_results") ? `
+                        <button type="button" id="btn-unvalidate-order" class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger);">
+                          <i data-lucide="unlock"></i>
+                          <span>فك الاعتماد للتعديل</span>
+                        </button>
+                      ` : ''}
                       <button type="button" id="btn-view-validated-report" class="btn btn-success btn-sm">
                         <i data-lucide="printer"></i>
                         <span>طباعة التقرير المعتمد (A4)</span>
@@ -223,10 +225,17 @@ window.LabResultsComponent = {
                       <span>حفظ النتائج مؤقتاً (مسودة)</span>
                     </button>
 
-                    <button type="button" id="btn-approve-validate" class="btn btn-primary btn-lg" style="box-shadow:0 4px 14px var(--primary-glow);">
-                      <i data-lucide="check-check"></i>
-                      <span>اعتماد النتيجة رسمياً وقفل التقرير (Approve)</span>
-                    </button>
+                    ${window.store.hasPermission("validate_results") ? `
+                      <button type="button" id="btn-approve-validate" class="btn btn-primary btn-lg" style="box-shadow:0 4px 14px var(--primary-glow);">
+                        <i data-lucide="check-check"></i>
+                        <span>اعتماد النتيجة رسمياً وقفل التقرير (Approve)</span>
+                      </button>
+                    ` : `
+                      <button type="button" class="btn btn-outline" disabled title="خاص بمدير المختبر فقط" style="opacity:0.65; cursor:not-allowed;">
+                        <i data-lucide="lock"></i>
+                        <span>اعتماد النتيجة (مقتصر على مدير المختبر)</span>
+                      </button>
+                    `}
                   </div>
                 `}
               </div>
@@ -337,8 +346,9 @@ window.LabResultsComponent = {
       btnApprove.addEventListener("click", () => {
         const { results, doctorNotes } = collectResultsFromUI();
         window.store.updateOrderResults(currentOrder.id, results, doctorNotes);
-        window.store.validateOrder(currentOrder.id);
-        window.app.showToast("تم اعتماد التقرير الطبي رسمياً بنجاح وتجهيزه للطباعة", "success");
+        const approver = window.store.getCurrentUser().name;
+        window.store.validateOrder(currentOrder.id, approver);
+        window.app.showToast(`تم اعتماد التقرير الطبي رسمياً بواسطة ${approver}`, "success");
         this.render();
       });
     }

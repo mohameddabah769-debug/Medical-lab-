@@ -29,8 +29,12 @@ class LabApp {
     this.initThemeToggle();
     this.initBackupActions();
     this.initModals();
+    this.initUserSwitcher();
 
-    // 4. الاشتراك في تحديثات الحالة المركزية
+    // 4. تطبيق الصلاحيات والمستخدم النشط
+    this.updateUserInterfaceForRole();
+
+    // 5. الاشتراك في تحديثات الحالة المركزية
     window.store.subscribe((state) => {
       this.updateSidebarBadges(state);
       // تحديث الشاشة الحالية والبيانات عند أي تغيير بالحالة
@@ -92,6 +96,12 @@ class LabApp {
   }
 
   navigateTo(viewName, syncStore = true) {
+    // التحقق من صلاحيات الوصول للموديول
+    if (viewName !== "dashboard" && !window.store.hasPermission(viewName)) {
+      this.showToast(`عفواً، حسابك الحالي ليس لديه صلاحية الوصول لشاشة (${viewName})`, "error");
+      viewName = "dashboard";
+    }
+
     this.currentView = viewName;
     if (syncStore) {
       window.store.state.currentView = viewName;
@@ -125,7 +135,8 @@ class LabApp {
       "results": "إدخال ومراجعة النتائج المخبرية والاعتماد",
       "medical-report": "التقرير الطبي والطباعة الرسمية (A4)",
       "finance": "الخزينة والمقبوضات والمصروفات والتعاقدات",
-      "settings": "إعدادات وهوية المختبر الطبي"
+      "settings": "إعدادات وهوية المختبر الطبي",
+      "staff": "إدارة فريق العمل وتوزيع الصلاحيات (RBAC)"
     };
     if (titleEl) {
       titleEl.textContent = titlesMap[viewName] || "نظام المختبرات الطبية";
@@ -153,6 +164,9 @@ class LabApp {
         break;
       case "settings":
         window.SettingsComponent.render();
+        break;
+      case "staff":
+        window.StaffComponent.render();
         break;
     }
 
@@ -194,6 +208,70 @@ class LabApp {
     if (iconContainer) {
       iconContainer.setAttribute("data-lucide", theme === "dark" ? "sun" : "moon");
       if (window.lucide) window.lucide.createIcons();
+    }
+  }
+
+  // ==========================================
+  // فريق العمل والصلاحيات ومبدّل المستخدمين (RBAC)
+  // ==========================================
+  initUserSwitcher() {
+    const select = document.getElementById("topbar-user-switch-select");
+    if (!select) return;
+
+    select.addEventListener("change", (e) => {
+      const selectedId = e.target.value;
+      const user = window.store.switchUser(selectedId);
+      if (user) {
+        this.updateUserInterfaceForRole();
+        this.showToast(`تم التبديل إلى المستخدم: ${user.name}`, "info");
+      }
+    });
+  }
+
+  updateUserInterfaceForRole() {
+    const user = window.store.getCurrentUser();
+    const role = window.store.getCurrentRole();
+    if (!user || !role) return;
+
+    // تحديث بطاقة المستخدم في الشريط العلوي
+    const avatarEl = document.getElementById("topbar-user-avatar");
+    const nameEl = document.getElementById("topbar-user-name");
+    const roleEl = document.getElementById("topbar-user-role");
+    const select = document.getElementById("topbar-user-switch-select");
+
+    if (avatarEl) avatarEl.textContent = user.name.trim().charAt(0);
+    if (nameEl) nameEl.textContent = user.name;
+    if (roleEl) roleEl.textContent = role.title;
+
+    // تحديث خيارات القائمة المنسدلة
+    if (select) {
+      const staffList = window.store.state.staff || [];
+      select.innerHTML = staffList.map(s => {
+        const r = (window.store.state.roles || []).find(roleItem => roleItem.id === s.role) || { title: s.role };
+        return `<option value="${s.id}" ${s.id === user.id ? 'selected' : ''}>${s.name} [${r.title.split('/')[0].trim()}]</option>`;
+      }).join("");
+    }
+
+    // إظهار/إخفاء زر الحجز السريع في الشريط العلوي بحسب صلاحية الاستقبال
+    const topbarNewPatientBtn = document.getElementById("topbar-new-patient-btn");
+    if (topbarNewPatientBtn) {
+      topbarNewPatientBtn.style.display = window.store.hasPermission("reception") ? "inline-flex" : "none";
+    }
+
+    // إظهار/إخفاء روابط القائمة الجانبية بحسب الصلاحيات
+    document.querySelectorAll(".nav-item").forEach(item => {
+      const view = item.getAttribute("data-view");
+      if (view === "dashboard") {
+        item.style.display = "flex";
+      } else {
+        const isPermitted = window.store.hasPermission(view);
+        item.style.display = isPermitted ? "flex" : "none";
+      }
+    });
+
+    // إذا كان الموظف حالياً في صفحة غير مصرح له بها، نحوله إلى dashboard
+    if (this.currentView !== "dashboard" && !window.store.hasPermission(this.currentView)) {
+      this.navigateTo("dashboard");
     }
   }
 
