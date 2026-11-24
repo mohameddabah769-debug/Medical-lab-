@@ -423,6 +423,10 @@ window.DashboardComponent = {
                           <i data-lucide="edit-3" style="width:14px;height:14px;"></i>
                           <span>النتائج</span>
                         </button>
+                        <button class="btn btn-outline btn-sm action-view-receipt" data-order-id="${order.id}" title="عرض وطباعة إيصال الاستلام">
+                          <i data-lucide="receipt" style="width:14px;height:14px;"></i>
+                          <span>إيصال</span>
+                        </button>
                         <button class="btn btn-outline btn-sm action-view-report" data-order-id="${order.id}" title="عرض وطباعة التقرير">
                           <i data-lucide="printer" style="width:14px;height:14px;"></i>
                           <span>تقرير</span>
@@ -476,6 +480,17 @@ window.DashboardComponent = {
       btn.addEventListener("click", (e) => {
         const orderId = e.currentTarget.getAttribute("data-order-id");
         window.store.setView("results", orderId);
+      });
+    });
+
+    container.querySelectorAll(".action-view-receipt").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const orderId = e.currentTarget.getAttribute("data-order-id");
+        const order = window.store.getOrder(orderId);
+        if (order && window.ReceptionComponent) {
+          const patient = window.store.getPatient(order.patientId);
+          window.ReceptionComponent.showReceiptModal(order, patient);
+        }
       });
     });
 

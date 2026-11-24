@@ -476,11 +476,35 @@ window.ReceptionComponent = {
   },
 
   showReceiptModal(order, patient) {
+    if (!order) return;
+    if (!patient) {
+      patient = window.store.getPatient(order.patientId) || { name: "مريض غير محدد", id: order.patientId || "-", age: "-", gender: "male" };
+    }
+
     const modalTitle = document.getElementById("modal-title");
     const modalBody = document.getElementById("modal-body");
     const modalFooter = document.getElementById("modal-footer");
 
     modalTitle.innerHTML = `<i data-lucide="receipt" style="color:var(--primary);"></i> إيصال استلام عينة وخدمة مخبرية`;
+
+    // احتساب وتأكيد إجمالي التكلفة إذا كان الطلب مسجلاً بـ 0 أو غير محسوب بدقة
+    const testsRequested = order.testsRequested || [];
+    let computedTotal = Number(order.totalAmount) || 0;
+    if (computedTotal <= 0 && testsRequested.length > 0) {
+      testsRequested.forEach(tId => {
+        const t = (window.store.state.tests || []).find(item => item.id === tId);
+        if (t && t.price) computedTotal += Number(t.price);
+      });
+      if (computedTotal > 0) {
+        order.totalAmount = computedTotal;
+        const disc = Number(order.discountAmount) || 0;
+        order.netAmount = Math.max(0, computedTotal - disc);
+        if (order.paidAmount === undefined || order.paidAmount === null) {
+          order.paidAmount = order.netAmount;
+        }
+        order.remainingAmount = Math.max(0, order.netAmount - Number(order.paidAmount));
+      }
+    }
 
     const barcodeSVG = window.LabBarcode.renderBarcodeSVG(order.barcode, 200, 48);
 
@@ -507,9 +531,9 @@ window.ReceptionComponent = {
         <div style="margin-bottom:14px;">
           <strong style="font-size:0.88rem; display:block; margin-bottom:6px;">التحاليل والفحوصات المطلوبة:</strong>
           <ul style="padding-right:20px; font-size:0.85rem; line-height:1.8;">
-            ${order.testsRequested.map(tId => {
+            ${testsRequested.map(tId => {
               const t = window.store.state.tests.find(item => item.id === tId);
-              return `<li><strong>${t ? t.nameAr + ' (' + t.code + ')' : tId}</strong> ${t && t.tube ? `<span style="font-size:0.75rem; color:var(--primary); margin-right:4px;">[${t.tube}]</span>` : ''}</li>`;
+              return `<li><strong>${t ? t.nameAr + ' (' + t.code + ')' : tId}</strong> ${t && t.price ? `<span style="color:var(--text-muted); font-size:0.8rem; margin-right:4px;">(${t.price} ج.م)</span>` : ''} ${t && t.tube ? `<span style="font-size:0.75rem; color:var(--primary); margin-right:4px;">[${t.tube}]</span>` : ''}</li>`;
             }).join("")}
           </ul>
         </div>
@@ -517,7 +541,7 @@ window.ReceptionComponent = {
         <div style="border-top:1px dashed var(--border-color); padding-top:10px; display:flex; flex-direction:column; gap:4px; font-size:0.9rem;">
           <div style="display:flex; justify-content:space-between;">
             <span>الإجمالي:</span>
-            <span>${order.totalAmount} ج.م</span>
+            <span><strong>${order.totalAmount || 0}</strong> ج.م</span>
           </div>
           ${order.discountAmount > 0 ? `
             <div style="display:flex; justify-content:space-between; color:var(--primary);">
@@ -527,16 +551,16 @@ window.ReceptionComponent = {
           ` : ''}
           <div style="display:flex; justify-content:space-between; font-weight:700;">
             <span>الصافي المطلوب:</span>
-            <span>${order.netAmount} ج.م</span>
+            <span><strong>${order.netAmount !== undefined ? order.netAmount : order.totalAmount}</strong> ج.م</span>
           </div>
           <div style="display:flex; justify-content:space-between; color:var(--success); font-weight:700;">
             <span>المدفوع:</span>
-            <span>${order.paidAmount} ج.م</span>
+            <span><strong>${order.paidAmount || 0}</strong> ج.م</span>
           </div>
           ${order.remainingAmount > 0 ? `
             <div style="display:flex; justify-content:space-between; color:var(--danger); font-weight:800;">
               <span>المتبقي عند الاستلام:</span>
-              <span>${order.remainingAmount} ج.م</span>
+              <span><strong>${order.remainingAmount}</strong> ج.م</span>
             </div>
           ` : '<div style="color:var(--success); font-weight:700; text-align:center; margin-top:4px;">★ تم السداد بالكامل ★</div>'}
         </div>
