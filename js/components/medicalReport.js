@@ -78,8 +78,11 @@ window.MedicalReportComponent = {
           <!-- ترويسة التقرير الرسمية -->
           <div class="print-header" style="border-bottom:2.5px solid #0284c7; padding-bottom:14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
             <div style="display:flex; align-items:center; gap:16px;">
-              <div style="width:52px; height:52px; background:linear-gradient(135deg, #0284c7, #0369a1); border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:26px;">
-                <i data-lucide="microscope"></i>
+              <div style="width:56px; height:56px; border-radius:10px; overflow:hidden; background:#fff; border:1px solid #e2e8f0; display:flex; align-items:center; justify-content:center;">
+                <img src="assets/serum-logo.jpg" alt="شعار المعمل" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                <div style="display:none; width:100%; height:100%; background:linear-gradient(135deg, #0284c7, #0369a1); align-items:center; justify-content:center; color:#fff; font-size:26px;">
+                  <i data-lucide="microscope"></i>
+                </div>
               </div>
               <div>
                 <h1 style="font-size:1.35rem; font-weight:900; color:#0284c7; margin:0; line-height:1.2;">${lab.nameAr}</h1>

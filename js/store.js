@@ -384,6 +384,7 @@ class LabStore {
   updateLabProfile(profileData) {
     this.state.labProfile = { ...this.state.labProfile, ...profileData };
     this.save();
+    this.notify();
     return this.state.labProfile;
   }
 
@@ -394,7 +395,7 @@ class LabStore {
     const currentId = this.state.currentUserId || "STAFF-101";
     return (this.state.staff || []).find(s => s.id === currentId) || (this.state.staff && this.state.staff[0]) || {
       id: "STAFF-101",
-      name: "أ.د. شريف عبد الوهاب",
+      name: "أ.د أحمد المراغي",
       role: "director"
     };
   }

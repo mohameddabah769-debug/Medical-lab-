@@ -14,8 +14,9 @@
   <!-- شاشة وبوابة تسجيل الدخول الرسمية (Login Portal) -->
   <div id="login-portal" class="login-screen-wrapper" style="display:none;">
     <div class="login-card">
-      <div class="login-brand-icon">
-        <i data-lucide="microscope"></i>
+      <div class="login-brand-icon" style="overflow:hidden; padding:0; background:#fff;">
+        <img src="assets/serum-logo.jpg" alt="شعار معمل سيرم" style="width:100%; height:100%; object-fit:cover; border-radius:inherit;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+        <i data-lucide="microscope" style="display:none;"></i>
       </div>
       <h2 class="login-title" id="login-lab-title">LabCore Pro LIS</h2>
       <p class="login-subtitle">بوابة الدخول الموحدة للكوادر الطبية والإدارية</p>
@@ -54,7 +55,7 @@
           ⚡ بوابات الدخول السريع لاختبار الصلاحيات (بنقرة واحدة):
         </div>
         <button type="button" class="quick-login-btn" data-user="dr_sherif" data-pass="admin123">
-          <span>👨‍⚕️ أ.د. شريف عبد الوهاب (مدير المختبر - كامل الصلاحيات)</span>
+          <span>👨‍⚕️ أ.د أحمد المراغي (مدير المختبر - كامل الصلاحيات)</span>
           <code>dr_sherif</code>
         </button>
         <button type="button" class="quick-login-btn" data-user="kareem_lab" data-pass="tech123">
@@ -98,8 +99,9 @@
     <!-- الشريط الجانبي (Sidebar) -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <div class="lab-brand-icon">
-          <i data-lucide="microscope"></i>
+        <div class="lab-brand-icon" style="overflow:hidden; padding:0; background:#fff;">
+          <img src="assets/serum-logo.jpg" alt="شعار معمل سيرم" style="width:100%; height:100%; object-fit:cover; border-radius:inherit;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+          <i data-lucide="microscope" style="display:none;"></i>
         </div>
         <div class="lab-brand-info">
           <h1>LabCore Pro</h1>
@@ -212,10 +214,10 @@
           <!-- مبدّل المستخدم النشط ومستوى الصلاحية -->
           <div id="topbar-user-box" style="display:flex; align-items:center; gap:8px; background:var(--bg-tertiary); padding:4px 10px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
             <div id="topbar-user-avatar" style="width:30px; height:30px; border-radius:50%; background:var(--primary); color:#ffffff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.8rem;">
-              ش
+              أ
             </div>
             <div style="line-height:1.2; text-align:right;">
-              <div id="topbar-user-name" style="font-weight:700; font-size:0.82rem; max-width:130px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">د. شريف</div>
+              <div id="topbar-user-name" style="font-weight:700; font-size:0.82rem; max-width:130px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">أ.د أحمد المراغي</div>
               <div id="topbar-user-role" style="font-size:0.7rem; color:var(--primary); font-weight:700;">مدير المختبر</div>
             </div>
             <select id="topbar-user-switch-select" class="form-control" style="padding:3px 6px; font-size:0.75rem; width:125px;" title="تبديل المستخدم الحالي لاختبار الصلاحيات">

@@ -26,12 +26,12 @@ window.SettingsComponent = {
           <div class="form-grid">
             <div class="form-group" style="grid-column: span 2;">
               <label class="form-label">اسم المختبر باللغة العربية *</label>
-              <input type="text" id="setting-lab-name-ar" class="form-control" value="${lab.nameAr || ''}" required placeholder="مثال: مختبرات رويال للتحاليل الطبية" />
+              <input type="text" id="setting-lab-name-ar" class="form-control" value="${lab.nameAr || ''}" required placeholder="مثال: معمل سيرم للتحاليل الطبية" />
             </div>
 
             <div class="form-group" style="grid-column: span 2;">
               <label class="form-label">اسم المختبر بالإنجليزية (Lab English Name) *</label>
-              <input type="text" id="setting-lab-name-en" class="form-control" value="${lab.nameEn || ''}" required placeholder="مثال: Royal Diagnostic Laboratories" />
+              <input type="text" id="setting-lab-name-en" class="form-control" value="${lab.nameEn || ''}" required placeholder="مثال: Serum Medical Laboratory" />
             </div>
 
             <div class="form-group">
@@ -41,7 +41,7 @@ window.SettingsComponent = {
 
             <div class="form-group">
               <label class="form-label">اسم مدير المختبر / الاستشاري المسؤول *</label>
-              <input type="text" id="setting-director-name" class="form-control" value="${lab.directorName || ''}" required placeholder="أ.د. شريف عبد الوهاب" />
+              <input type="text" id="setting-director-name" class="form-control" value="${lab.directorName || ''}" required placeholder="أ.د أحمد المراغي" />
             </div>
 
             <div class="form-group" style="grid-column: span 2;">
@@ -95,8 +95,11 @@ window.SettingsComponent = {
             <!-- Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #0284c7; padding-bottom:12px; margin-bottom:12px;">
               <div style="display:flex; align-items:center; gap:14px;">
-                <div style="width:50px; height:50px; background:linear-gradient(135deg,#0284c7,#0ea5e9); border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px;">
-                  🔬
+                <div style="width:50px; height:50px; border-radius:12px; overflow:hidden; background:#fff; border:1px solid #e2e8f0; display:flex; align-items:center; justify-content:center;">
+                  <img src="assets/serum-logo.jpg" alt="شعار المعمل" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                  <div style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#0284c7,#0ea5e9); align-items:center; justify-content:center; color:#fff; font-size:22px;">
+                    🔬
+                  </div>
                 </div>
                 <div>
                   <div id="preview-lab-name-ar" style="font-size:1.15rem; font-weight:900; color:#0284c7;">${lab.nameAr || 'اسم المختبر بالعربية'}</div>
