@@ -104,6 +104,7 @@
         <div class="lab-brand-info">
           <h1>LabCore Pro</h1>
           <p>إدارة المختبرات الطبية الذكية</p>
+          <small id="sidebar-lab-director" style="display:block; font-size:0.7rem; color:var(--primary); font-weight:700; margin-top:1px; opacity:0.9;"></small>
         </div>
       </div>
 
@@ -199,6 +200,15 @@
         </div>
 
         <div class="topbar-actions">
+          <!-- بطاقة مدير / صاحب المعمل (من إعدادات المعمل) -->
+          <div id="topbar-lab-director-box" style="display:flex; align-items:center; gap:7px; background:linear-gradient(135deg,rgba(2,132,199,0.12),rgba(14,165,233,0.08)); padding:4px 12px; border-radius:var(--radius-md); border:1px solid rgba(2,132,199,0.3);">
+            <div style="width:28px; height:28px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px;">🔬</div>
+            <div style="line-height:1.2; text-align:right;">
+              <div id="topbar-lab-director-name" style="font-weight:800; font-size:0.82rem; color:var(--text-primary); max-width:150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+              <div style="font-size:0.68rem; color:var(--primary); font-weight:700;">مدير المعمل / صاحب المنشأة</div>
+            </div>
+          </div>
+
           <!-- مبدّل المستخدم النشط ومستوى الصلاحية -->
           <div id="topbar-user-box" style="display:flex; align-items:center; gap:8px; background:var(--bg-tertiary); padding:4px 10px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
             <div id="topbar-user-avatar" style="width:30px; height:30px; border-radius:50%; background:var(--primary); color:#ffffff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.8rem;">

@@ -22,6 +22,8 @@ class LabApp {
       const loginLabTitle = document.getElementById("login-lab-title");
       if (loginLabTitle) loginLabTitle.textContent = window.store.state.labProfile.nameAr;
     }
+    // تهيئة بيانات مدير المعمل (Topbar + Sidebar) عند التحميل
+    this.syncLabProfileUI(window.store.state.labProfile);
 
     // 2. ربط المصادقة وبوابة تسجيل الدخول
     this.initAuth();
@@ -297,6 +299,12 @@ class LabApp {
     if (brandH1) brandH1.textContent = lab.nameAr || '';
     const brandP = document.querySelector('.lab-brand-info p');
     if (brandP) brandP.textContent = lab.nameEn || 'إدارة المختبرات الطبية الذكية';
+    // اسم مدير المعمل في الشريط الجانبي
+    const sidebarDirector = document.getElementById('sidebar-lab-director');
+    if (sidebarDirector) sidebarDirector.textContent = lab.directorName ? ('د. ' + lab.directorName + ' — مدير المعمل') : '';
+    // اسم مدير المعمل في الـ Topbar (صاحب المنشأة)
+    const topbarDirectorName = document.getElementById('topbar-lab-director-name');
+    if (topbarDirectorName) topbarDirectorName.textContent = lab.directorName || '';
     // عنوان شاشة تسجيل الدخول
     const loginTitle = document.getElementById('login-lab-title');
     if (loginTitle) loginTitle.textContent = lab.nameAr || '';
