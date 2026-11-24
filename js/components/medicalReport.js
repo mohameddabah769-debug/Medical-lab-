@@ -248,7 +248,7 @@ window.MedicalReportComponent = {
     const printBtn = document.getElementById("btn-trigger-print");
     if (printBtn) {
       printBtn.addEventListener("click", () => {
-        window.print();
+        window.printDocument('report');
       });
     }
 

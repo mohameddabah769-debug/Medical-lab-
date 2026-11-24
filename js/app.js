@@ -508,3 +508,66 @@ document.addEventListener("DOMContentLoaded", () => {
   window.app = new LabApp();
   window.app.init();
 });
+
+// ==========================================================================
+// محرك الطباعة المركزي الموحد (Unified Dynamic Print Engine)
+// يضمن طباعة كافة التقارير والإيصالات دون صفحات بيضاء أو تداخل شاشات
+// ==========================================================================
+window.printDocument = function(mode = 'auto') {
+  document.body.classList.remove('print-mode-receipt', 'print-mode-analytics', 'print-mode-audit', 'print-mode-report');
+
+  const modal = document.getElementById("app-modal");
+  const receiptContent = document.getElementById("receipt-printable-content");
+  const isReceiptOpen = modal && modal.classList.contains("active") && receiptContent;
+
+  if (mode === 'receipt' || (mode === 'auto' && isReceiptOpen)) {
+    document.body.classList.add('print-mode-receipt');
+  } else if (mode === 'analytics' || (mode === 'auto' && window.store && window.store.state.currentView === 'dashboard')) {
+    document.body.classList.add('print-mode-analytics');
+  } else if (mode === 'audit' || (mode === 'auto' && window.store && window.store.state.currentView === 'finance')) {
+    document.body.classList.add('print-mode-audit');
+  } else {
+    // Medical Report: ensure rendered
+    if (window.MedicalReportComponent && window.store) {
+      if (window.store.state.currentView !== 'medical-report') {
+        window.store.setView('medical-report');
+      } else {
+        window.MedicalReportComponent.render();
+      }
+    }
+    document.body.classList.add('print-mode-report');
+  }
+
+  setTimeout(() => {
+    window.print();
+  }, 60);
+
+  const cleanup = () => {
+    document.body.classList.remove('print-mode-receipt', 'print-mode-analytics', 'print-mode-audit', 'print-mode-report');
+    window.removeEventListener('afterprint', cleanup);
+  };
+  window.addEventListener('afterprint', cleanup);
+  setTimeout(cleanup, 2500);
+};
+
+window.addEventListener('beforeprint', () => {
+  const modal = document.getElementById("app-modal");
+  const receiptContent = document.getElementById("receipt-printable-content");
+  if (modal && modal.classList.contains("active") && receiptContent) {
+    document.body.classList.add('print-mode-receipt');
+  } else if (window.store && window.store.state.currentView === 'dashboard') {
+    document.body.classList.add('print-mode-analytics');
+  } else if (window.store && window.store.state.currentView === 'finance') {
+    document.body.classList.add('print-mode-audit');
+  } else {
+    if (window.MedicalReportComponent && window.store && window.store.state.currentView !== 'medical-report') {
+      window.MedicalReportComponent.render();
+    }
+    document.body.classList.add('print-mode-report');
+  }
+});
+
+window.addEventListener('afterprint', () => {
+  document.body.classList.remove('print-mode-receipt', 'print-mode-analytics', 'print-mode-audit', 'print-mode-report');
+});
+

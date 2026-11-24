@@ -569,7 +569,7 @@ window.ReceptionComponent = {
     window.app.openModal();
 
     document.getElementById("btn-print-receipt").addEventListener("click", () => {
-      window.print();
+      window.printDocument('receipt');
     });
 
     document.getElementById("btn-proceed-results").addEventListener("click", () => {

@@ -460,7 +460,7 @@ window.DashboardComponent = {
     const printBtn = document.getElementById("btn-print-analytics");
     if (printBtn) {
       printBtn.addEventListener("click", () => {
-        window.print();
+        window.printDocument('analytics');
       });
     }
 

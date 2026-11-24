@@ -1,31 +1,26 @@
 /* ==========================================================================
-   نظام إدارة المختبرات الطبية - LabCore
-   ملف تنسيقات الطباعة الرسمية للتقارير الطبية (Print CSS - A4 Standard)
+   نظام إدارة المختبرات الطبية - LabCore Pro
+   ملف تنسيقات الطباعة الشامل والمتكامل لكافة تقارير وإيصالات النظام
    ========================================================================== */
 
 @page {
   size: A4 portrait;
-  margin: 10mm 12mm 12mm 12mm;
+  margin: 8mm 10mm 10mm 10mm;
 }
 
 @media print {
-  /* إخفاء واجهة التطبيق التفاعلية */
-  .sidebar,
-  .topbar,
-  .modal-overlay,
-  .toast-container,
-  .btn,
-  .no-print,
-  .page-header-actions,
-  .nav-item,
-  .backup-actions {
-    display: none !important;
+  /* 1. القواعد العامة والألوان لضمان وضوح الطباعة 100% ومنع الصفحات البيضاء */
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
   }
 
   body, html {
     background: #ffffff !important;
-    color: #000000 !important;
-    font-size: 11pt !important;
+    color: #0f172a !important;
+    font-size: 10.5pt !important;
     line-height: 1.4 !important;
     direction: rtl !important;
     width: 100% !important;
@@ -35,26 +30,195 @@
     print-color-adjust: exact !important;
   }
 
+  /* إخفاء كافة عناصر التحكم والتنقل والأزرار التفاعلية */
+  .sidebar,
+  .topbar,
+  .toast-container,
+  .btn,
+  .no-print,
+  .action-icon-btn,
+  .theme-toggle-btn,
+  .page-header-actions,
+  .nav-item,
+  .backup-actions,
+  .quick-login-pills,
+  .login-screen-wrapper,
+  #modal-close-btn {
+    display: none !important;
+  }
+
   .app-layout {
     display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    min-height: auto !important;
   }
 
   .main-wrapper {
     margin: 0 !important;
     padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
   }
 
   .page-container {
     padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
   }
 
-  /* إخفاء كافة الشاشات ما عدا شاشة التقرير الطبي للطباعة */
-  .app-view:not(#view-medical-report) {
+  /* ==========================================================================
+     الوضع الأول: طباعة إيصال الاستلام الفوري (Receipt Mode)
+     ========================================================================== */
+  body.print-mode-receipt .app-layout {
     display: none !important;
   }
 
-  #view-medical-report {
+  body.print-mode-receipt #app-modal.modal-overlay {
     display: block !important;
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  body.print-mode-receipt .modal-container {
+    display: block !important;
+    width: 100% !important;
+    max-width: 520px !important;
+    margin: 0 auto !important;
+    padding: 14px !important;
+    border: 1.5px dashed #64748b !important;
+    border-radius: 6px !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+  }
+
+  body.print-mode-receipt .modal-header,
+  body.print-mode-receipt .modal-footer {
+    display: none !important;
+  }
+
+  body.print-mode-receipt #receipt-printable-content {
+    display: block !important;
+    width: 100% !important;
+    color: #0f172a !important;
+  }
+
+  /* ==========================================================================
+     الوضع الثاني: طباعة مركز التقارير التحليلية وساعات الذروة (Analytics Mode)
+     ========================================================================== */
+  body.print-mode-analytics .app-view:not(#view-dashboard) {
+    display: none !important;
+  }
+
+  body.print-mode-analytics #view-dashboard {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  body.print-mode-analytics .kpi-grid,
+  body.print-mode-analytics #view-dashboard > .card:not(.analytics-card),
+  body.print-mode-analytics .analytics-period-selector,
+  body.print-mode-analytics #btn-print-analytics {
+    display: none !important;
+  }
+
+  body.print-mode-analytics .analytics-card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  body.print-mode-analytics .analytics-kpi-grid {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: 16px !important;
+  }
+
+  body.print-mode-analytics .analytics-card-stat {
+    border: 1px solid #cbd5e1 !important;
+    background: #f8fafc !important;
+    padding: 8px 10px !important;
+    border-radius: 6px !important;
+  }
+
+  body.print-mode-analytics .vertical-bar-chart-container {
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    padding: 14px 10px 8px 10px !important;
+    height: 180px !important;
+    border-radius: 6px !important;
+  }
+
+  body.print-mode-analytics .chart-bar-fill {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* ==========================================================================
+     الوضع الثالث: طباعة كشف التدقيق المالي ومطابقة الخزينة (Audit Mode)
+     ========================================================================== */
+  body.print-mode-audit .app-view:not(#view-finance) {
+    display: none !important;
+  }
+
+  body.print-mode-audit #view-finance {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  body.print-mode-audit #view-finance > .card:not(.audit-card),
+  body.print-mode-audit .audit-filter-bar,
+  body.print-mode-audit #btn-print-audit-report {
+    display: none !important;
+  }
+
+  body.print-mode-audit .audit-card {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  body.print-mode-audit #audit-table-print {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 8.5pt !important;
+  }
+
+  body.print-mode-audit #audit-table-print th,
+  body.print-mode-audit #audit-table-print td {
+    border: 1px solid #cbd5e1 !important;
+    padding: 5px 8px !important;
+  }
+
+  /* ==========================================================================
+     الوضع الرابع: طباعة التقرير الطبي الرسمي A4 (Medical Report Mode - الافتراضي)
+     ========================================================================== */
+  body.print-mode-report .app-view:not(#view-medical-report),
+  body:not(.print-mode-receipt):not(.print-mode-analytics):not(.print-mode-audit) .app-view:not(#view-medical-report) {
+    display: none !important;
+  }
+
+  body.print-mode-report #view-medical-report,
+  body:not(.print-mode-receipt):not(.print-mode-analytics):not(.print-mode-audit) #view-medical-report {
+    display: block !important;
+    width: 100% !important;
   }
 
   .print-page {
@@ -71,109 +235,103 @@
 
   /* ترويسة التقرير الطبي الرسمي */
   .print-header {
-    border-bottom: 2px solid #0284c7;
-    padding-bottom: 12px;
-    margin-bottom: 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .lab-print-logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    border-bottom: 2.5px solid #0284c7 !important;
+    padding-bottom: 12px !important;
+    margin-bottom: 14px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
   }
 
   .lab-print-logo svg {
-    width: 48px;
-    height: 48px;
+    width: 44px;
+    height: 44px;
     fill: #0284c7;
   }
 
   .lab-print-titles h1 {
-    font-size: 16pt;
-    font-weight: 800;
-    color: #0284c7;
-    margin: 0;
+    font-size: 15pt !important;
+    font-weight: 800 !important;
+    color: #0284c7 !important;
+    margin: 0 !important;
   }
 
   .lab-print-titles p {
-    font-size: 9pt;
-    color: #475569;
-    margin: 2px 0 0 0;
+    font-size: 8.5pt !important;
+    color: #475569 !important;
+    margin: 2px 0 0 0 !important;
   }
 
   .lab-print-meta {
-    text-align: left;
-    font-size: 8.5pt;
-    color: #334155;
-    direction: ltr;
+    text-align: left !important;
+    font-size: 8pt !important;
+    color: #334155 !important;
+    direction: ltr !important;
   }
 
-  /* جدول بيانات المريض والزيارة */
+  /* بيانات المريض والزيارة */
   .patient-info-box {
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    padding: 10px 14px;
-    margin-bottom: 16px;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    margin-bottom: 14px !important;
     background-color: #f8fafc !important;
   }
 
   .patient-info-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px 16px;
-    font-size: 9.5pt;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px 14px !important;
+    font-size: 9pt !important;
   }
 
   .info-item {
-    display: flex;
-    gap: 6px;
+    display: flex !important;
+    gap: 6px !important;
   }
 
   .info-item .info-label {
-    font-weight: 700;
-    color: #475569;
+    font-weight: 700 !important;
+    color: #475569 !important;
   }
 
   .info-item .info-val {
-    font-weight: 600;
-    color: #0f172a;
+    font-weight: 600 !important;
+    color: #0f172a !important;
   }
 
   /* عنوان التقرير والفحص */
   .report-section-title {
     background-color: #e0f2fe !important;
     color: #0369a1 !important;
-    padding: 6px 12px;
-    font-size: 11pt;
-    font-weight: 800;
-    border-right: 4px solid #0284c7;
-    margin: 12px 0 8px 0;
+    padding: 5px 10px !important;
+    font-size: 10pt !important;
+    font-weight: 800 !important;
+    border-right: 4px solid #0284c7 !important;
+    margin: 10px 0 6px 0 !important;
   }
 
   /* جدول نتائج التحاليل للطباعة */
   .print-results-table {
     width: 100% !important;
     border-collapse: collapse !important;
-    margin-bottom: 20px;
-    font-size: 9.5pt;
+    margin-bottom: 16px !important;
+    font-size: 9pt !important;
   }
 
   .print-results-table th {
     background-color: #f1f5f9 !important;
     color: #1e293b !important;
     border: 1px solid #94a3b8 !important;
-    padding: 6px 10px !important;
+    padding: 5px 8px !important;
     font-weight: 700 !important;
-    text-align: right;
+    text-align: right !important;
   }
 
   .print-results-table td {
     border: 1px solid #cbd5e1 !important;
-    padding: 6px 10px !important;
-    vertical-align: middle;
+    padding: 5px 8px !important;
+    vertical-align: middle !important;
   }
 
   .print-results-table tr:nth-child(even) {
@@ -198,54 +356,54 @@
 
   /* تذييل التقرير والتوقيعات والختم */
   .print-footer-container {
-    margin-top: 30px;
-    border-top: 1px dashed #cbd5e1;
-    padding-top: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    margin-top: 24px !important;
+    border-top: 1px dashed #cbd5e1 !important;
+    padding-top: 14px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-end !important;
   }
 
   .lab-director-signature {
-    text-align: center;
-    width: 200px;
+    text-align: center !important;
+    width: 200px !important;
   }
 
   .signature-title {
-    font-weight: 700;
-    font-size: 10pt;
-    color: #1e293b;
-    margin-bottom: 35px;
+    font-weight: 700 !important;
+    font-size: 9.5pt !important;
+    color: #1e293b !important;
+    margin-bottom: 30px !important;
   }
 
   .signature-line {
-    border-top: 1px solid #64748b;
-    padding-top: 4px;
-    font-size: 8.5pt;
-    color: #475569;
+    border-top: 1px solid #64748b !important;
+    padding-top: 4px !important;
+    font-size: 8pt !important;
+    color: #475569 !important;
   }
 
   .lab-stamp-box {
-    width: 110px;
-    height: 110px;
-    border: 2px dashed #0284c7;
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: #0284c7;
-    font-weight: 700;
-    font-size: 8pt;
-    text-align: center;
-    transform: rotate(-10deg);
+    width: 100px !important;
+    height: 100px !important;
+    border: 2px dashed #0284c7 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #0284c7 !important;
+    font-weight: 700 !important;
+    font-size: 7.5pt !important;
+    text-align: center !important;
+    transform: rotate(-8deg) !important;
   }
 
   .print-legal-notice {
-    text-align: center;
-    font-size: 7.5pt;
-    color: #64748b;
-    margin-top: 15px;
+    text-align: center !important;
+    font-size: 7.5pt !important;
+    color: #64748b !important;
+    margin-top: 12px !important;
   }
 
   /* العلامة المائية لحفظ حقوق التقرير الطبي والبرمجة */
@@ -254,7 +412,7 @@
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) rotate(-30deg) !important;
-    font-size: 38pt !important;
+    font-size: 36pt !important;
     font-weight: 900 !important;
     color: rgba(2, 132, 199, 0.04) !important;
     white-space: nowrap !important;
@@ -266,8 +424,8 @@
 
   /* شريط حفظ حقوق الطبع والنشر والبرمجة في أسفل الورقة المطبوعة */
   .print-copyright-bar {
-    margin-top: 18px !important;
-    padding-top: 8px !important;
+    margin-top: 14px !important;
+    padding-top: 6px !important;
     border-top: 1.5px solid #0284c7 !important;
     display: flex !important;
     justify-content: space-between !important;
@@ -275,7 +433,7 @@
     font-size: 7pt !important;
     color: #475569 !important;
     background-color: #f8fafc !important;
-    padding: 6px 10px !important;
+    padding: 5px 10px !important;
     border-radius: 4px !important;
   }
 

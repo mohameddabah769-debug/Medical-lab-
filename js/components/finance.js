@@ -502,7 +502,7 @@ window.FinanceComponent = {
     const printAuditBtn = document.getElementById("btn-print-audit-report");
     if (printAuditBtn) {
       printAuditBtn.addEventListener("click", () => {
-        window.print();
+        window.printDocument('audit');
       });
     }
 
