@@ -321,6 +321,21 @@ window.DashboardComponent = {
             </div>
           </div>
         `}
+
+        <!-- تذييل حفظ حقوق البرمجة والطباعة لمركز التقارير -->
+        <div style="margin-top:22px; padding:10px 14px; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:0.75rem;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <i data-lucide="shield-check" style="width:15px; height:15px; color:#10b981;"></i>
+            <span style="font-weight:700; color:var(--text-primary);">سند لتطوير البرمجيات | Sanad Digital 💻</span>
+            <span style="color:var(--text-muted);">— تم التطوير والبرمجة: <strong>م/ محمد الدباح</strong></span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <a href="https://wa.me/201501084747" target="_blank" rel="noopener noreferrer" style="color:#10b981; font-weight:700; text-decoration:none; font-family:var(--font-mono);">
+              01501084747 📲
+            </a>
+            <span style="color:var(--text-muted); font-size:0.72rem;">جميع حقوق الطبع والنشر والبرمجة محفوظة © 2026</span>
+          </div>
+        </div>
       </div>
 
       <!-- بطاقة الإجراءات السريعة وجدول أحدث الزيارات -->

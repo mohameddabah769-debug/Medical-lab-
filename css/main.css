@@ -1208,3 +1208,129 @@ body {
   gap: 12px;
   margin-bottom: 20px;
 }
+
+/* ==========================================================================
+   سند لتطوير البرمجيات - بطاقات حفظ حقوق الطبع والنشر والبرمجة (Sanad Digital)
+   ========================================================================== */
+.login-copyright-box {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border-color);
+  text-align: center;
+}
+
+.login-copyright-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.login-copyright-dev {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin: 4px 0 2px 0;
+}
+
+.login-copyright-dev strong {
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.login-copyright-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.developer-contact-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.developer-contact-pill:hover {
+  background: #10b981;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  transform: translateY(-1px);
+}
+
+/* بطاقة المطور في الشريط الجانبي */
+.sidebar-copyright-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+}
+
+.sidebar-copyright-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 14px var(--primary-glow);
+}
+
+.sidebar-dev-company {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.sidebar-dev-name {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 3px 0;
+}
+
+.sidebar-dev-contact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: #10b981;
+  font-weight: 700;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  margin-top: 4px;
+}
+
+.sidebar-dev-contact:hover {
+  background: #10b981;
+  color: #ffffff;
+}
+
+/* شارة الحماية والترخيص في الإعدادات */
+.developer-license-card {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+  border: 1.5px solid rgba(2, 132, 199, 0.25);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-top: 24px;
+}
+

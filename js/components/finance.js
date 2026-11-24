@@ -75,6 +75,16 @@ window.FinanceComponent = {
             <div class="kpi-value" style="color:${kpis.netDailyIncome >= 0 ? '#0284c7' : '#dc2626'};">${kpis.netDailyIncome.toLocaleString()} ج.م</div>
             <div class="kpi-sub">المقبوضات - المصروفات</div>
           </div>
+
+          <!-- تذييل حفظ حقوق الملكية والطباعة للدفتر المالي -->
+          <div style="margin-top:16px; padding:8px 14px; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:0.75rem;">
+            <div style="color:var(--text-primary); font-weight:700;">
+              سند لتطوير البرمجيات | Sanad Digital 💻 — برمجة: م/ محمد الدباح (01501084747)
+            </div>
+            <div style="color:var(--text-muted); font-size:0.72rem;">
+              دفتر الأستاذ والتدقيق المالي مشفر ومحمي برمجياً • جميع الحقوق محفوظة © 2026
+            </div>
+          </div>
         </div>
       </div>
 
@@ -400,6 +410,16 @@ window.FinanceComponent = {
                 }).join("")}
               </tbody>
             </table>
+          </div>
+
+          <!-- تذييل حفظ حقوق الملكية والطباعة للدفتر المالي -->
+          <div style="margin-top:16px; padding:8px 14px; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:0.75rem;">
+            <div style="color:var(--text-primary); font-weight:700;">
+              سند لتطوير البرمجيات | Sanad Digital 💻 — برمجة: م/ محمد الدباح (01501084747)
+            </div>
+            <div style="color:var(--text-muted); font-size:0.72rem;">
+              دفتر الأستاذ والتدقيق المالي مشفر ومحمي برمجياً • جميع الحقوق محفوظة © 2026
+            </div>
           </div>
         </div>
       </div>

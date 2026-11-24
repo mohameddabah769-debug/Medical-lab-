@@ -66,8 +66,15 @@ window.MedicalReportComponent = {
         </div>
       ` : `
         <!-- صفحة التقرير الطبي A4 المعيارية الرسمية -->
-        <div class="print-page card" style="background:#ffffff; color:#0f172a; max-width:850px; margin:0 auto; padding:32px 36px; border:1px solid #cbd5e1; box-shadow:var(--shadow-lg); font-family:var(--font-sans);">
+        <div class="print-page card" style="background:#ffffff; color:#0f172a; max-width:850px; margin:0 auto; padding:32px 36px; border:1px solid #cbd5e1; box-shadow:var(--shadow-lg); font-family:var(--font-sans); position:relative;">
           
+          <!-- علامة مائية رقمية لحفظ حقوق التقرير الطبي والنشر -->
+          <div class="print-watermark" aria-hidden="true">
+            <div>سند لتطوير البرمجيات</div>
+            <div style="font-size:20pt; opacity:0.8;">Sanad Digital • LabCore Pro</div>
+            <div style="font-size:14pt; opacity:0.7;">م/ محمد الدباح</div>
+          </div>
+
           <!-- ترويسة التقرير الرسمية -->
           <div class="print-header" style="border-bottom:2.5px solid #0284c7; padding-bottom:14px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;">
             <div style="display:flex; align-items:center; gap:16px;">
@@ -201,6 +208,19 @@ window.MedicalReportComponent = {
 
           <div class="print-legal-notice" style="text-align:center; font-size:0.75rem; color:#64748b; margin-top:16px; border-top:1px solid #f1f5f9; padding-top:8px;">
             ${lab.footerNotice}
+          </div>
+
+          <!-- شريط حفظ حقوق الطبع والنشر والبرمجة وحماية الملكية الفكرية -->
+          <div class="print-copyright-bar" style="margin-top:14px; padding:6px 12px; border-top:1.5px solid #0284c7; display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; color:#475569; background:#f8fafc; border-radius:4px;">
+            <div>
+              <strong>سند لتطوير البرمجيات (Sanad Digital)</strong> — تم تطوير وبرمجة النظام: <strong>م/ محمد الدباح</strong> (01501084747)
+            </div>
+            <div style="direction:ltr; font-family:var(--font-mono); font-size:0.68rem; color:#64748b;">
+              All Rights Reserved © 2026 • Encrypted Medical Document
+            </div>
+          </div>
+          <div style="text-align:center; font-size:0.65rem; color:#94a3b8; margin-top:4px;">
+            وثيقة طبية رسمية مشفرة بباركود رقمي — يُحظر التلاعب بالنتائج أو نسخ أو إعادة هندسة النظام دون ترخيص كتابي بموجب قوانين حماية الملكية الفكرية.
           </div>
         </div>
       `}

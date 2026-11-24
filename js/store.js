@@ -20,6 +20,7 @@ class LabStore {
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed && parsed.orders && parsed.tests) {
+          parsed.developerInfo = window.SEED_DATA.developerInfo;
           return parsed;
         }
       }

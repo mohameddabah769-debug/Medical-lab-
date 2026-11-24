@@ -77,6 +77,52 @@ window.SettingsComponent = {
             </button>
           </div>
         </form>
+
+        <!-- بطاقة حقوق الملكية الفكرية والجهة المطورة للنظام -->
+        <div class="developer-license-card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; margin-bottom:14px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:44px; height:44px; border-radius:10px; background:var(--primary); color:#ffffff; display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow:0 4px 12px var(--primary-glow);">
+                <i data-lucide="code-2"></i>
+              </div>
+              <div>
+                <h3 style="margin:0; font-size:1.05rem; font-weight:800; color:var(--text-primary);">
+                  سند لتطوير البرمجيات | Sanad Digital 💻
+                </h3>
+                <div style="font-size:0.8rem; color:var(--primary); font-weight:700; margin-top:2px;">
+                  حلول إدارة معامل ومختبرات التحاليل الطبية الذكية
+                </div>
+              </div>
+            </div>
+
+            <div style="background:rgba(16, 185, 129, 0.12); border:1px solid rgba(16, 185, 129, 0.3); border-radius:var(--radius-full); padding:4px 14px; font-size:0.75rem; font-weight:800; color:#10b981; display:flex; align-items:center; gap:6px;">
+              <i data-lucide="shield-check" style="width:14px; height:14px;"></i>
+              <span>نسخة نظام مرخصة ومحمية برمجياً © 2026</span>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; font-size:0.84rem; background:var(--bg-card); padding:14px 16px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+            <div>
+              <span style="color:var(--text-muted); display:block; font-size:0.75rem;">تم التطوير والبرمجة بواسطة:</span>
+              <strong style="color:var(--text-primary); font-size:0.92rem;">م/ محمد الدباح</strong>
+            </div>
+            <div>
+              <span style="color:var(--text-muted); display:block; font-size:0.75rem;">للدعم الفني والتراخيص:</span>
+              <a href="https://wa.me/201501084747" target="_blank" rel="noopener noreferrer" style="color:#10b981; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-family:var(--font-mono);">
+                <span>01501084747 📲</span>
+                <span style="font-size:0.75rem;">(واتساب / اتصال)</span>
+              </a>
+            </div>
+            <div>
+              <span style="color:var(--text-muted); display:block; font-size:0.75rem;">حقوق الطبع والنشر:</span>
+              <span style="font-weight:700; color:var(--text-primary);">جميع الحقوق محفوظة ومسجلة</span>
+            </div>
+          </div>
+
+          <div style="font-size:0.72rem; color:var(--text-muted); margin-top:10px; line-height:1.5;">
+            * هذا النظام محمي بموجب قوانين حماية حقوق الملكية الفكرية وحق المؤلف والجرائم المعلوماتية. يُحظر نسخ أو استغلال الأكواد البرمجية أو التصاميم أو إعادة نشرها دون تصريح خطي رسمي من سند لتطوير البرمجيات.
+          </div>
+        </div>
       </div>
     `;
 

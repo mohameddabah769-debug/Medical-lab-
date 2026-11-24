@@ -544,6 +544,9 @@ window.ReceptionComponent = {
         <div style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-top:16px; border-top:1px solid var(--border-color); padding-top:8px;">
           شكراً لثقتكم بمختبرنا. برجاء إحضار هذا الإيصال أو كود العينة عند استلام النتيجة.
         </div>
+        <div style="text-align:center; font-size:0.68rem; color:var(--text-muted); margin-top:6px; font-family:var(--font-sans);">
+          نظام LabCore Pro — تطوير: سند لتطوير البرمجيات (Sanad Digital) | م/ محمد الدباح • 01501084747 © 2026
+        </div>
       </div>
     `;
 
