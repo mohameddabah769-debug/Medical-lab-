@@ -85,11 +85,16 @@ window.StaffComponent = {
                       </span>
                     </td>
                     <td style="text-align:center;">
-                      <div style="display:inline-flex; gap:6px;">
+                      <div style="display:inline-flex; gap:6px; align-items:center;">
+                        <button class="btn btn-sm btn-outline btn-customize-permissions" data-id="${member.id}" title="ضبط وتخصيص صلاحيات الوصول" style="font-size:0.78rem; padding:4px 10px; color:var(--primary); border-color:var(--primary);">
+                          <i data-lucide="shield-check" style="width:13px;height:13px;"></i>
+                          <span>تخصيص الصلاحيات</span>
+                        </button>
+
                         ${!isCurrent ? `
                           <button class="btn btn-sm btn-outline btn-switch-to-user" data-id="${member.id}" title="تجربة النظام بصلاحية هذا المستخدم" style="font-size:0.78rem; padding:4px 10px;">
                             <i data-lucide="log-in" style="width:13px;height:13px;"></i>
-                            <span>دخول بصلاحيته</span>
+                            <span>دخول</span>
                           </button>
                         ` : ''}
 
@@ -221,6 +226,216 @@ window.StaffComponent = {
           this.render();
         }
       });
+    });
+
+    // فتح نافذة تخصيص الصلاحيات
+    container.querySelectorAll(".btn-customize-permissions").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-id");
+        this.showPermissionsModal(id);
+      });
+    });
+  },
+
+  permissionGroups: [
+    {
+      id: "patients_reception",
+      title: "الاستقبال وشؤون المرضى والزيارات",
+      icon: "users",
+      color: "#0284c7",
+      bg: "rgba(2, 132, 199, 0.08)",
+      items: [
+        { key: "reception_view", label: "الاطلاع على ملفات وسجلات المرضى والبحث فيها" },
+        { key: "reception", label: "تسجيل وقيد زيارات وتحاليل جديدة في السجلات" },
+        { key: "reception_edit", label: "تعديل بيانات المرضى والزيارات والطلبات" },
+        { key: "reception_discount", label: "تطبيق نسب الخصم المالي للزيارات" },
+        { key: "reception_delete", label: "حذف وإلغاء الزيارات من سجلات المختبر", sensitive: true }
+      ]
+    },
+    {
+      id: "lab_testing",
+      title: "الفحوصات والعمليات المخبرية",
+      icon: "flask-conical",
+      color: "#059669",
+      bg: "rgba(5, 150, 105, 0.08)",
+      items: [
+        { key: "results_view", label: "الاطلاع على قائمة العينات والتحاليل اليومية" },
+        { key: "results", label: "إدخال وتسجيل النتائج المخبرية في المنظومة" },
+        { key: "validate_results", label: "اعتماد وتوقيع النتائج الطبية (مدير المختبر / استشاري)" },
+        { key: "results_reopen", label: "إعادة فتح وتعديل نتائج معتمدة مسبقاً", sensitive: true },
+        { key: "catalog", label: "إدارة وتعديل دليل التحاليل والباقات والأسعار" }
+      ]
+    },
+    {
+      id: "finance_safe",
+      title: "الإدارة المالية والخزينة (سرية تامة)",
+      icon: "wallet",
+      color: "#e11d48",
+      bg: "rgba(225, 29, 72, 0.08)",
+      items: [
+        { key: "finance", label: "الاطلاع على أرقام الخزينة والأرباح والإيرادات والمصروفات" },
+        { key: "finance_collect", label: "تحرير سندات قبض وتحصيل مبالغ ومتبقيات من المرضى" },
+        { key: "finance_expense", label: "تحرير سندات صرف المصروفات وشراء الكيماويات" },
+        { key: "finance_audit", label: "الفحص والتدقيق المالي الشامل وكشف الحسابات" },
+        { key: "finance_delete", label: "حذف وإلغاء السندات والحركات المالية", sensitive: true }
+      ]
+    },
+    {
+      id: "reports_printing",
+      title: "التقارير الطبية والأرشيف والطباعة",
+      icon: "printer",
+      color: "#7c3aed",
+      bg: "rgba(124, 58, 237, 0.08)",
+      items: [
+        { key: "medical-report", label: "استعراض وطباعة التقارير المخبرية الرسمية (A4)" },
+        { key: "report_pdf", label: "تحميل وتصدير التقرير كملف PDF رقمي" },
+        { key: "report_whatsapp", label: "إرسال إشعار جاهزية النتيجة عبر واتساب للمريض" },
+        { key: "report_barcode", label: "طباعة باركود أنابيب العينات وإيصال الاستلام" }
+      ]
+    },
+    {
+      id: "contracts_insurance",
+      title: "التعاقدات وشركات التأمين والنقابات",
+      icon: "briefcase",
+      color: "#d97706",
+      bg: "rgba(217, 119, 6, 0.08)",
+      items: [
+        { key: "contracts_view", label: "الاطلاع على عقود التأمين والنقابات وقوائم الأسعار" },
+        { key: "contracts_edit", label: "إضافة وتعديل جهات التعاقد ونسب الخصم والتحمل" },
+        { key: "contracts_claims", label: "إصدار ومتابعة المطالبات المالية لجهات التعاقد" }
+      ]
+    },
+    {
+      id: "system_admin",
+      title: "إدارة النظام وفريق العمل والإعدادات",
+      icon: "settings",
+      color: "#0d9488",
+      bg: "rgba(13, 148, 136, 0.08)",
+      items: [
+        { key: "staff", label: "إدارة فريق العمل وإضافة وتعديل بيانات الموظفين" },
+        { key: "staff_permissions", label: "ضبط وتخصيص صلاحيات الوصول للكوادر" },
+        { key: "settings", label: "تعديل هوية وإعدادات المختبر وترويسة التقارير" },
+        { key: "backup", label: "تصدير واستيراد النسخ الاحتياطية وإعادة الضبط" }
+      ]
+    }
+  ],
+
+  showPermissionsModal(memberId) {
+    const member = (window.store.state.staff || []).find(s => s.id === memberId);
+    if (!member) return;
+
+    const roleObj = (window.store.state.roles || []).find(r => r.id === member.role) || { title: member.role, color: "var(--primary)" };
+    const currentPerms = window.store.getUserPermissions(memberId);
+
+    const modalTitle = document.getElementById("modal-title");
+    const modalBody = document.getElementById("modal-body");
+    const modalFooter = document.getElementById("modal-footer");
+
+    modalTitle.innerHTML = `
+      <div style="display:flex; align-items:center; gap:10px;">
+        <i data-lucide="shield-check" style="color:var(--primary); width:24px; height:24px;"></i>
+        <span>ضبط وتخصيص صلاحيات الوصول: ${member.name}</span>
+        <span class="badge" style="background:rgba(2, 132, 199, 0.1); color:${roleObj.color}; border:1px solid ${roleObj.color}; font-size:0.75rem;">${roleObj.title}</span>
+      </div>
+    `;
+
+    modalBody.innerHTML = `
+      <div class="permissions-header-bar">
+        <div style="display:flex; align-items:center; gap:8px; font-size:0.86rem; color:var(--text-secondary); font-weight:600;">
+          <i data-lucide="info" style="color:var(--primary); width:18px; height:18px;"></i>
+          <span>يمكنك تفعيل أو إلغاء أي صلاحية بشكل منفصل أدناه:</span>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" id="btn-perm-select-all" class="btn btn-outline btn-sm">
+            <i data-lucide="check-square" style="width:14px; height:14px;"></i>
+            <span>تحديد الكل</span>
+          </button>
+          <button type="button" id="btn-perm-deselect-all" class="btn btn-outline btn-sm">
+            <i data-lucide="square" style="width:14px; height:14px;"></i>
+            <span>إلغاء التحديد</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="permissions-grid">
+        ${this.permissionGroups.map(group => `
+          <div class="permission-card">
+            <div class="permission-card-header" style="background-color:${group.bg}; color:${group.color};">
+              <i data-lucide="${group.icon}" style="width:18px; height:18px;"></i>
+              <span>${group.title}</span>
+            </div>
+            <div class="permission-card-body">
+              ${group.items.map(item => {
+                const isChecked = currentPerms.includes(item.key);
+                return `
+                  <label class="permission-item">
+                    <input type="checkbox" class="perm-checkbox" value="${item.key}" ${isChecked ? 'checked' : ''} />
+                    <span>
+                      ${item.label}
+                      ${item.sensitive ? '<span class="badge-sensitive">(إجراء حساس)</span>' : ''}
+                    </span>
+                  </label>
+                `;
+              }).join("")}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+    `;
+
+    modalFooter.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:12px;">
+        <div style="font-size:0.8rem; color:var(--text-muted); display:flex; align-items:center; gap:6px;">
+          <i data-lucide="sparkles" style="color:var(--primary); width:15px; height:15px;"></i>
+          <span>تسري هذه الصلاحيات فوراً وتُحفظ في ملف الموظف في النظام</span>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" id="btn-confirm-save-permissions" class="btn btn-primary btn-sm" style="box-shadow:0 2px 8px var(--primary-glow);">
+            <i data-lucide="check"></i>
+            <span>حفظ واعتماد الصلاحيات</span>
+          </button>
+          <button type="button" id="btn-cancel-permissions-modal" class="btn btn-outline btn-sm">
+            <span>إلغاء</span>
+          </button>
+        </div>
+      </div>
+    `;
+
+    if (window.lucide) window.lucide.createIcons();
+    window.app.openModal("permissions-modal-dialog");
+
+    // أحداث النافذة
+    document.getElementById("btn-perm-select-all").addEventListener("click", () => {
+      document.querySelectorAll(".perm-checkbox").forEach(cb => cb.checked = true);
+    });
+
+    document.getElementById("btn-perm-deselect-all").addEventListener("click", () => {
+      document.querySelectorAll(".perm-checkbox").forEach(cb => cb.checked = false);
+    });
+
+    document.getElementById("btn-cancel-permissions-modal").addEventListener("click", () => {
+      window.app.closeModal();
+    });
+
+    document.getElementById("btn-confirm-save-permissions").addEventListener("click", () => {
+      const selected = [];
+      document.querySelectorAll(".perm-checkbox:checked").forEach(cb => {
+        selected.push(cb.value);
+      });
+
+      // دائماً إضافة dashboard للموظف النشط
+      if (!selected.includes("dashboard")) selected.push("dashboard");
+
+      window.store.updateStaffPermissions(memberId, selected);
+
+      // إذا كان الموظف المعدل هو المستخدم النشط حالياً، تحديث الواجهة فوراً
+      if (memberId === window.store.getCurrentUser().id) {
+        window.app.updateUserInterfaceForRole();
+      }
+
+      window.app.closeModal();
+      window.app.showToast(`تم حفظ وتحديث صلاحيات ${member.name} بنجاح (${selected.length} صلاحية مفعّلة)`, "success");
+      this.render();
     });
   },
 

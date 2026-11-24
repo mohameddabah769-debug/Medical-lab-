@@ -454,14 +454,26 @@ class LabApp {
     }
   }
 
-  openModal() {
+  openModal(customClass = null) {
     const modal = document.getElementById("app-modal");
-    if (modal) modal.classList.add("active");
+    if (modal) {
+      const container = modal.querySelector(".modal-container");
+      if (container) {
+        container.className = "modal-container" + (customClass ? " " + customClass : "");
+      }
+      modal.classList.add("active");
+    }
   }
 
   closeModal() {
     const modal = document.getElementById("app-modal");
-    if (modal) modal.classList.remove("active");
+    if (modal) {
+      const container = modal.querySelector(".modal-container");
+      if (container) {
+        container.className = "modal-container";
+      }
+      modal.classList.remove("active");
+    }
   }
 
   showToast(message, type = "info") {

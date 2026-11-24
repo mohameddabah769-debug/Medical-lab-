@@ -235,7 +235,7 @@ class LabStore {
     return true;
   }
 
-  payOrderRemaining(orderId, payAmount) {
+  payOrderRemaining(orderId, payAmount, paymentMethod = "cash", notes = "") {
     const order = this.getOrder(orderId);
     if (!order) return false;
 
@@ -245,6 +245,18 @@ class LabStore {
     const actualPayment = Math.min(order.remainingAmount, amt);
     order.paidAmount += actualPayment;
     order.remainingAmount = Math.max(0, order.remainingAmount - actualPayment);
+
+    // تسجيل إيصال السداد في سجل مدفوعات الزيارة
+    if (!order.paymentHistory) order.paymentHistory = [];
+    order.paymentHistory.push({
+      id: `RCP-${Date.now()}`,
+      amount: actualPayment,
+      paymentMethod: paymentMethod || "cash",
+      notes: notes || "تحصيل دفعة متبقية من الزيارة",
+      date: new Date().toISOString(),
+      by: (this.getCurrentUser() && this.getCurrentUser().name) || "مسؤول الخزينة"
+    });
+
     this.save();
     return true;
   }
@@ -363,9 +375,32 @@ class LabStore {
   }
 
   hasPermission(permKey) {
+    const user = this.getCurrentUser();
+    // إذا كان للموظف مصفوفة صلاحيات مخصصة (Custom Granular RBAC)
+    if (user && Array.isArray(user.customPermissions)) {
+      return user.customPermissions.includes(permKey);
+    }
     const role = this.getCurrentRole();
     if (!role || !role.permissions) return true;
     return role.permissions.includes(permKey);
+  }
+
+  getUserPermissions(userId) {
+    const user = (this.state.staff || []).find(s => s.id === userId);
+    if (!user) return [];
+    if (Array.isArray(user.customPermissions)) {
+      return [...user.customPermissions];
+    }
+    const role = (this.state.roles || []).find(r => r.id === user.role);
+    return role && role.permissions ? [...role.permissions] : [];
+  }
+
+  updateStaffPermissions(staffId, permissionsArray) {
+    const user = (this.state.staff || []).find(s => s.id === staffId);
+    if (!user) return false;
+    user.customPermissions = permissionsArray;
+    this.save();
+    return true;
   }
 
   switchUser(staffId) {
@@ -489,6 +524,141 @@ class LabStore {
       todayExpenses,
       netDailyIncome: todayRevenue - todayExpenses,
       allOrdersCount: this.state.orders.length
+    };
+  }
+
+  // ==========================================
+  // الفحص والتدقيق المالي الشامل (Dynamic Audit Ledger)
+  // ==========================================
+  getAuditTransactions(filters = {}) {
+    const list = [];
+
+    // 1. استخراج مقبوضات الزيارات الأولية والمدفوعات
+    (this.state.orders || []).forEach(order => {
+      const patient = this.getPatient(order.patientId) || { name: "مريض غير محدد" };
+      
+      const paymentsSum = (order.paymentHistory || []).reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+      const initialPaid = Math.max(0, (Number(order.paidAmount) || 0) - paymentsSum);
+
+      if (initialPaid > 0) {
+        list.push({
+          id: `TX-ORD-${order.id}`,
+          refId: order.id,
+          barcode: order.barcode,
+          type: "order_receipt",
+          typeLabel: "سند قبض زيارة جديدة",
+          direction: "in",
+          amount: initialPaid,
+          party: patient.name,
+          details: `حجز فحوصات (${order.requestedItems ? order.requestedItems.length : 1} فحص) - كود عينة ${order.barcode}`,
+          paymentMethod: order.paymentMethod || "cash",
+          date: order.createdAt || new Date().toISOString(),
+          audited: true,
+          by: "موظف الاستقبال"
+        });
+      }
+
+      // الدفعات اللاحقة المسددة لسندات المتبقي
+      if (order.paymentHistory && Array.isArray(order.paymentHistory)) {
+        order.paymentHistory.forEach(pmt => {
+          list.push({
+            id: `TX-PAY-${pmt.id}`,
+            refId: order.id,
+            barcode: order.barcode,
+            type: "debt_collection",
+            typeLabel: "تحصيل متبقي مديونية",
+            direction: "in",
+            amount: Number(pmt.amount) || 0,
+            party: patient.name,
+            details: `سداد دفعة من متبقي الزيارة ${order.barcode} - ${pmt.notes || ''}`,
+            paymentMethod: pmt.paymentMethod || "cash",
+            date: pmt.date || order.createdAt,
+            audited: true,
+            by: pmt.by || "مسؤول الخزينة"
+          });
+        });
+      }
+    });
+
+    // 2. استخراج المصروفات التشغيلية
+    (this.state.expenses || []).forEach(exp => {
+      const expDate = exp.date && exp.date.includes("T") ? exp.date : `${exp.date || new Date().toISOString().split("T")[0]}T10:00:00.000Z`;
+      list.push({
+        id: `TX-EXP-${exp.id}`,
+        refId: exp.id,
+        barcode: exp.id,
+        type: "expense",
+        typeLabel: "سند صرف مصروفات",
+        direction: "out",
+        amount: Number(exp.amount) || 0,
+        party: exp.category || "مصروفات معملية",
+        details: `${exp.title} ${exp.notes ? ' - ' + exp.notes : ''}`,
+        paymentMethod: "cash",
+        date: expDate,
+        audited: true,
+        by: "مسؤول الخزينة"
+      });
+    });
+
+    // الترتيب الزمني التنازلي (الأحدث أولاً)
+    list.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // تطبيق الفلاتر الديناميكية
+    let filtered = list;
+
+    // فلتر التاريخ
+    if (filters.dateRange && filters.dateRange !== "all") {
+      const now = new Date();
+      const todayStr = now.toISOString().split("T")[0];
+      
+      if (filters.dateRange === "today") {
+        filtered = filtered.filter(item => item.date.startsWith(todayStr));
+      } else if (filters.dateRange === "yesterday") {
+        const y = new Date(now);
+        y.setDate(y.getDate() - 1);
+        const yStr = y.toISOString().split("T")[0];
+        filtered = filtered.filter(item => item.date.startsWith(yStr));
+      } else if (filters.dateRange === "week") {
+        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        filtered = filtered.filter(item => new Date(item.date) >= weekAgo);
+      } else if (filters.dateRange === "month") {
+        const monthPrefix = todayStr.slice(0, 7);
+        filtered = filtered.filter(item => item.date.startsWith(monthPrefix));
+      }
+    }
+
+    // فلتر نوع الحركة
+    if (filters.type && filters.type !== "all") {
+      filtered = filtered.filter(item => item.type === filters.type);
+    }
+
+    // فلتر وسيلة الدفع
+    if (filters.method && filters.method !== "all") {
+      filtered = filtered.filter(item => item.paymentMethod === filters.method);
+    }
+
+    // فلتر البحث النصي
+    if (filters.search && filters.search.trim()) {
+      const q = filters.search.trim().toLowerCase();
+      filtered = filtered.filter(item => 
+        (item.party && item.party.toLowerCase().includes(q)) ||
+        (item.details && item.details.toLowerCase().includes(q)) ||
+        (item.barcode && item.barcode.toLowerCase().includes(q)) ||
+        (item.id && item.id.toLowerCase().includes(q))
+      );
+    }
+
+    // احتساب الإجماليات والمؤشرات
+    const totalInflow = filtered.filter(t => t.direction === "in").reduce((sum, t) => sum + t.amount, 0);
+    const totalOutflow = filtered.filter(t => t.direction === "out").reduce((sum, t) => sum + t.amount, 0);
+    const netCash = totalInflow - totalOutflow;
+
+    return {
+      transactions: filtered,
+      totalCount: filtered.length,
+      totalInflow,
+      totalOutflow,
+      netCash
     };
   }
 

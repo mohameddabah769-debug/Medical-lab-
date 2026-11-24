@@ -4,7 +4,13 @@
  */
 
 window.FinanceComponent = {
-  activeSubTab: "debts", // 'debts' | 'expenses' | 'contracts'
+  activeSubTab: "debts", // 'debts' | 'expenses' | 'contracts' | 'audit'
+  auditFilters: {
+    dateRange: "all",
+    type: "all",
+    method: "all",
+    search: ""
+  },
 
   render() {
     const container = document.getElementById("view-finance");
@@ -14,6 +20,7 @@ window.FinanceComponent = {
     const orders = window.store.state.orders;
     const expenses = window.store.state.expenses;
     const contracts = window.store.state.contracts;
+    const auditData = window.store.getAuditTransactions(this.auditFilters);
 
     // تصفية الزيارات التي عليها متبقي مالي
     const debtOrders = orders.filter(o => o.remainingAmount > 0);
@@ -76,11 +83,11 @@ window.FinanceComponent = {
         <div class="card-header">
           <div class="card-title">
             <i data-lucide="landmark"></i>
-            <span>إدارة الخزينة والتحصيلات والمصروفات</span>
+            <span>إدارة الخزينة والتحصيلات والمصروفات والتدقيق المالي</span>
           </div>
 
           <!-- أزرار التبويب الفرعي -->
-          <div style="display:flex; gap:8px;">
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button id="tab-btn-debts" class="btn btn-sm ${this.activeSubTab === 'debts' ? 'btn-primary' : 'btn-outline'}">
               <i data-lucide="hand-coins"></i>
               <span>تحصيل متبقيات المرضى (${debtOrders.length})</span>
@@ -94,6 +101,11 @@ window.FinanceComponent = {
             <button id="tab-btn-contracts" class="btn btn-sm ${this.activeSubTab === 'contracts' ? 'btn-primary' : 'btn-outline'}">
               <i data-lucide="briefcase"></i>
               <span>جهات التعاقد والتأمين (${contracts.length})</span>
+            </button>
+
+            <button id="tab-btn-audit" class="btn btn-sm ${this.activeSubTab === 'audit' ? 'btn-primary' : 'btn-outline'}" style="border-color:var(--primary); font-weight:700;">
+              <i data-lucide="scale"></i>
+              <span>الفحص والتدقيق المالي الشامل (${auditData.totalCount})</span>
             </button>
           </div>
         </div>
@@ -244,6 +256,152 @@ window.FinanceComponent = {
             </table>
           </div>
         </div>
+
+        <!-- 4. محتوى الفحص والتدقيق المالي الشامل (Audit Ledger) -->
+        <div id="subtab-content-audit" style="display: ${this.activeSubTab === 'audit' ? 'block' : 'none'};">
+          <!-- شريط أدوات الفحص والتصفية الحية -->
+          <div class="audit-filter-bar">
+            <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:220px;">
+              <i data-lucide="search" style="color:var(--text-muted); width:16px; height:16px;"></i>
+              <input type="text" id="audit-filter-search" class="form-control" placeholder="بحث باسم المريض، كود العينة، أو البيان..." value="${this.auditFilters.search}" style="font-size:0.85rem; padding:6px 10px;" />
+            </div>
+
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); white-space:nowrap;">نطاق التاريخ:</span>
+              <select id="audit-filter-date" class="form-control" style="font-size:0.82rem; padding:6px 10px; width:135px;">
+                <option value="all" ${this.auditFilters.dateRange === 'all' ? 'selected' : ''}>كل الفترات</option>
+                <option value="today" ${this.auditFilters.dateRange === 'today' ? 'selected' : ''}>اليوم فقط</option>
+                <option value="yesterday" ${this.auditFilters.dateRange === 'yesterday' ? 'selected' : ''}>أمس</option>
+                <option value="week" ${this.auditFilters.dateRange === 'week' ? 'selected' : ''}>آخر 7 أيام</option>
+                <option value="month" ${this.auditFilters.dateRange === 'month' ? 'selected' : ''}>الشهر الحالي</option>
+              </select>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); white-space:nowrap;">نوع الحركة:</span>
+              <select id="audit-filter-type" class="form-control" style="font-size:0.82rem; padding:6px 10px; width:155px;">
+                <option value="all" ${this.auditFilters.type === 'all' ? 'selected' : ''}>كل الحركات المالية</option>
+                <option value="order_receipt" ${this.auditFilters.type === 'order_receipt' ? 'selected' : ''}>سندات قبض زيارات جديدة</option>
+                <option value="debt_collection" ${this.auditFilters.type === 'debt_collection' ? 'selected' : ''}>تحصيل متبقيات مديونيات</option>
+                <option value="expense" ${this.auditFilters.type === 'expense' ? 'selected' : ''}>سندات صرف مصروفات</option>
+              </select>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="font-size:0.8rem; font-weight:700; color:var(--text-secondary); white-space:nowrap;">وسيلة الدفع:</span>
+              <select id="audit-filter-method" class="form-control" style="font-size:0.82rem; padding:6px 10px; width:125px;">
+                <option value="all" ${this.auditFilters.method === 'all' ? 'selected' : ''}>كل الوسائل</option>
+                <option value="cash" ${this.auditFilters.method === 'cash' ? 'selected' : ''}>نقدي (Cash)</option>
+                <option value="card" ${this.auditFilters.method === 'card' ? 'selected' : ''}>بطاقة / فيزا</option>
+                <option value="transfer" ${this.auditFilters.method === 'transfer' ? 'selected' : ''}>تحويل بنكي / محفظة</option>
+              </select>
+            </div>
+
+            <div style="display:flex; gap:6px;">
+              <button id="btn-reset-audit-filters" class="btn btn-outline btn-sm" title="إعادة ضبط الفلاتر">
+                <i data-lucide="rotate-ccw" style="width:14px; height:14px;"></i>
+                <span>تصفير</span>
+              </button>
+              <button id="btn-print-audit-report" class="btn btn-primary btn-sm" title="طباعة كشف التدقيق المالي">
+                <i data-lucide="printer" style="width:14px; height:14px;"></i>
+                <span>طباعة الكشف</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- شريط مؤشرات الفحص والتدقيق المحتسبة لحظياً -->
+          <div class="audit-metrics-bar">
+            <div class="audit-metric-card" style="border-right:4px solid #10b981;">
+              <div class="audit-metric-label">إجمالي المقبوضات المفحوصة (وارد للخزينة +)</div>
+              <div class="audit-metric-val" style="color:#059669;">+ ${auditData.totalInflow.toLocaleString()} ج.م</div>
+            </div>
+
+            <div class="audit-metric-card" style="border-right:4px solid #ef4444;">
+              <div class="audit-metric-label">إجمالي المصروفات المفحوصة (صادر من الخزينة -)</div>
+              <div class="audit-metric-val" style="color:#dc2626;">- ${auditData.totalOutflow.toLocaleString()} ج.م</div>
+            </div>
+
+            <div class="audit-metric-card" style="border-right:4px solid #0284c7;">
+              <div class="audit-metric-label">صافي النقدية / رصيد الخزينة المطابق</div>
+              <div class="audit-metric-val" style="color:${auditData.netCash >= 0 ? '#0284c7' : '#dc2626'};">${auditData.netCash.toLocaleString()} ج.م</div>
+            </div>
+
+            <div class="audit-metric-card" style="border-right:4px solid #8b5cf6;">
+              <div class="audit-metric-label">عدد القيود والحركات المسجلة المطابقة</div>
+              <div class="audit-metric-val" style="color:#7c3aed;">${auditData.totalCount} قيد مدقق</div>
+            </div>
+          </div>
+
+          <!-- جدول دفتر اليومية والتدقيق المالي الشامل -->
+          <div class="table-responsive">
+            <table class="data-table" id="audit-table-print">
+              <thead>
+                <tr>
+                  <th>رقم القيد / الحركة</th>
+                  <th>التاريخ والوقت</th>
+                  <th>نوع الحركة</th>
+                  <th>الطرف / الحساب والبيان</th>
+                  <th>وسيلة الدفع</th>
+                  <th style="color:#059669; font-weight:800;">وارد للخزينة (+)</th>
+                  <th style="color:#dc2626; font-weight:800;">صادر (- )</th>
+                  <th>منفذ الحركة</th>
+                  <th style="text-align:center;">حالة المطابقة</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${auditData.transactions.length === 0 ? `
+                  <tr>
+                    <td colspan="9" style="text-align:center; padding:35px; color:var(--text-muted);">
+                      لا توجد أي حركات مالية مطابقة للفلاتر المحددة حالياً.
+                    </td>
+                  </tr>
+                ` : auditData.transactions.map((tx) => {
+                  const d = new Date(tx.date);
+                  const dateStr = d.toLocaleDateString('ar-EG');
+                  const timeStr = d.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+                  
+                  let badgeClass = "badge-info";
+                  if (tx.type === "order_receipt") badgeClass = "badge-success";
+                  if (tx.type === "debt_collection") badgeClass = "badge-info";
+                  if (tx.type === "expense") badgeClass = "badge-danger";
+
+                  return `
+                    <tr>
+                      <td><code style="font-size:0.8rem;">${tx.id}</code></td>
+                      <td style="font-size:0.82rem; white-space:nowrap;">
+                        <strong>${dateStr}</strong>
+                        <div style="color:var(--text-muted); font-size:0.75rem;">${timeStr}</div>
+                      </td>
+                      <td><span class="badge ${badgeClass}" style="font-size:0.75rem;">${tx.typeLabel}</span></td>
+                      <td>
+                        <strong>${tx.party}</strong>
+                        <div style="font-size:0.78rem; color:var(--text-muted);">${tx.details}</div>
+                      </td>
+                      <td>
+                        <span style="font-size:0.8rem; display:inline-flex; align-items:center; gap:4px;">
+                          <i data-lucide="${tx.paymentMethod === 'card' ? 'credit-card' : 'banknote'}" style="width:13px;height:13px; color:var(--primary);"></i>
+                          ${tx.paymentMethod === 'card' ? 'فيزا / بطاقة' : (tx.paymentMethod === 'transfer' ? 'تحويل بنكي' : 'نقدي')}
+                        </span>
+                      </td>
+                      <td style="color:#059669; font-weight:800; font-family:var(--font-mono); font-size:0.95rem;">
+                        ${tx.direction === 'in' ? '+ ' + tx.amount.toLocaleString() + ' ج.م' : '-'}
+                      </td>
+                      <td style="color:#dc2626; font-weight:800; font-family:var(--font-mono); font-size:0.95rem;">
+                        ${tx.direction === 'out' ? '- ' + tx.amount.toLocaleString() + ' ج.م' : '-'}
+                      </td>
+                      <td style="font-size:0.82rem;">${tx.by || 'مسؤول الخزينة'}</td>
+                      <td style="text-align:center;">
+                        <span class="badge badge-success" style="font-size:0.72rem; padding:3px 8px;">
+                          ✓ معتمد ومطابق
+                        </span>
+                      </td>
+                    </tr>
+                  `;
+                }).join("")}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     `;
 
@@ -271,6 +429,62 @@ window.FinanceComponent = {
       this.activeSubTab = "contracts";
       this.render();
     });
+
+    const auditBtn = document.getElementById("tab-btn-audit");
+    if (auditBtn) {
+      auditBtn.addEventListener("click", () => {
+        this.activeSubTab = "audit";
+        this.render();
+      });
+    }
+
+    // فلاتر التدقيق المالي
+    const searchFilter = document.getElementById("audit-filter-search");
+    if (searchFilter) {
+      searchFilter.addEventListener("input", (e) => {
+        this.auditFilters.search = e.target.value;
+        this.render();
+      });
+    }
+
+    const dateFilter = document.getElementById("audit-filter-date");
+    if (dateFilter) {
+      dateFilter.addEventListener("change", (e) => {
+        this.auditFilters.dateRange = e.target.value;
+        this.render();
+      });
+    }
+
+    const typeFilter = document.getElementById("audit-filter-type");
+    if (typeFilter) {
+      typeFilter.addEventListener("change", (e) => {
+        this.auditFilters.type = e.target.value;
+        this.render();
+      });
+    }
+
+    const methodFilter = document.getElementById("audit-filter-method");
+    if (methodFilter) {
+      methodFilter.addEventListener("change", (e) => {
+        this.auditFilters.method = e.target.value;
+        this.render();
+      });
+    }
+
+    const resetFiltersBtn = document.getElementById("btn-reset-audit-filters");
+    if (resetFiltersBtn) {
+      resetFiltersBtn.addEventListener("click", () => {
+        this.auditFilters = { dateRange: "all", type: "all", method: "all", search: "" };
+        this.render();
+      });
+    }
+
+    const printAuditBtn = document.getElementById("btn-print-audit-report");
+    if (printAuditBtn) {
+      printAuditBtn.addEventListener("click", () => {
+        window.print();
+      });
+    }
 
     // تحصيل دفعة من المتبقي
     container.querySelectorAll(".btn-pay-remaining").forEach(btn => {
@@ -325,6 +539,20 @@ window.FinanceComponent = {
         <label class="form-label">المبلغ المسدد الآن (ج.م) *</label>
         <input type="number" id="pay-input-amount" class="form-control" value="${remaining}" min="1" max="${remaining}" style="font-size:1.1rem; font-weight:700;" />
       </div>
+
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">طريقة التحصيل *</label>
+        <select id="pay-input-method" class="form-control">
+          <option value="cash">نقداً في الخزينة (Cash)</option>
+          <option value="card">بطاقة بنكية / فيزا (Card)</option>
+          <option value="transfer">تحويل بنكي / محفظة إلكترونية</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">ملاحظات التحصيل وسند القبض</label>
+        <input type="text" id="pay-input-notes" class="form-control" placeholder="سداد دفعة من متبقي الحساب" />
+      </div>
     `;
 
     modalFooter.innerHTML = `
@@ -342,12 +570,15 @@ window.FinanceComponent = {
 
     document.getElementById("btn-confirm-payment").addEventListener("click", () => {
       const amt = parseFloat(document.getElementById("pay-input-amount").value);
+      const method = document.getElementById("pay-input-method").value || "cash";
+      const notes = document.getElementById("pay-input-notes").value || "";
+
       if (isNaN(amt) || amt <= 0) {
         window.app.showToast("يرجى إدخال مبلغ صحيح", "error");
         return;
       }
 
-      window.store.payOrderRemaining(orderId, amt);
+      window.store.payOrderRemaining(orderId, amt, method, notes);
       window.app.showToast(`تم تحصيل ${amt} ج.م وإضافتها إلى رصيد الخزينة بنجاح`, "success");
       window.app.closeModal();
       this.render();
