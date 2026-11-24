@@ -11,7 +11,73 @@
 </head>
 <body>
 
-  <div class="app-layout">
+  <!-- شاشة وبوابة تسجيل الدخول الرسمية (Login Portal) -->
+  <div id="login-portal" class="login-screen-wrapper" style="display:none;">
+    <div class="login-card">
+      <div class="login-brand-icon">
+        <i data-lucide="microscope"></i>
+      </div>
+      <h2 class="login-title" id="login-lab-title">LabCore Pro LIS</h2>
+      <p class="login-subtitle">بوابة الدخول الموحدة للكوادر الطبية والإدارية</p>
+
+      <form id="login-form">
+        <div class="login-input-group">
+          <span class="login-input-icon"><i data-lucide="user"></i></span>
+          <input type="text" id="login-username" class="form-control login-input-field" placeholder="اسم المستخدم أو البريد" required autocomplete="username" />
+        </div>
+
+        <div class="login-input-group">
+          <span class="login-input-icon"><i data-lucide="lock"></i></span>
+          <input type="password" id="login-password" class="form-control login-input-field" placeholder="كلمة المرور" required autocomplete="current-password" />
+          <button type="button" id="btn-toggle-login-pwd" class="login-password-toggle" title="إظهار / إخفاء كلمة المرور">
+            <i data-lucide="eye" id="icon-pwd-eye"></i>
+          </button>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; font-size:0.82rem; color:var(--text-muted);">
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" id="login-remember" checked />
+            <span>تذكر تسجيل الدخول</span>
+          </label>
+          <span style="color:var(--primary); font-weight:600;">نظام آمن ومشفر 256-bit</span>
+        </div>
+
+        <button type="submit" id="btn-submit-login" class="btn btn-primary btn-lg" style="width:100%; box-shadow:0 4px 14px var(--primary-glow);">
+          <i data-lucide="log-in"></i>
+          <span>تسجيل الدخول للمختبر</span>
+        </button>
+      </form>
+
+      <!-- أزرار الدخول السريع لاختبار النظام -->
+      <div class="quick-login-pills">
+        <div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:4px;">
+          ⚡ بوابات الدخول السريع لاختبار الصلاحيات (بنقرة واحدة):
+        </div>
+        <button type="button" class="quick-login-btn" data-user="dr_sherif" data-pass="admin123">
+          <span>👨‍⚕️ أ.د. شريف عبد الوهاب (مدير المختبر - كامل الصلاحيات)</span>
+          <code>dr_sherif</code>
+        </button>
+        <button type="button" class="quick-login-btn" data-user="kareem_lab" data-pass="tech123">
+          <span>🔬 د. كريم ممدوح (أخصائي تحاليل - رصد نتائج)</span>
+          <code>kareem_lab</code>
+        </button>
+        <button type="button" class="quick-login-btn" data-user="dina_reception" data-pass="recep123">
+          <span>📋 أ. دينا سامي (استقبال - حجز وفوترة)</span>
+          <code>dina_reception</code>
+        </button>
+        <button type="button" class="quick-login-btn" data-user="tarek_finance" data-pass="acc123">
+          <span>💼 أ. طارق مصطفى (محاسب وخزينة ومصروفات)</span>
+          <code>tarek_finance</code>
+        </button>
+      </div>
+
+      <div style="font-size:0.72rem; color:var(--text-muted); margin-top:20px;">
+        نظام إدارة المختبرات الطبية الذكية • جميع الحقوق محفوظة © 2026
+      </div>
+    </div>
+  </div>
+
+  <div class="app-layout" id="main-app-layout">
     <!-- الشريط الجانبي (Sidebar) -->
     <aside class="sidebar">
       <div class="sidebar-header">
@@ -84,6 +150,10 @@
           <i data-lucide="rotate-ccw"></i>
           <span>إعادة ضبط البيانات التأسيسية</span>
         </button>
+        <button id="btn-logout-sidebar" class="btn btn-sm btn-outline" style="color:var(--danger); border-color:rgba(239, 68, 68, 0.3); margin-top:6px; width:100%; justify-content:center;" title="تسجيل الخروج">
+          <i data-lucide="log-out"></i>
+          <span>تسجيل الخروج</span>
+        </button>
       </div>
     </aside>
 
@@ -116,6 +186,10 @@
           
           <button id="theme-toggle-btn" class="theme-toggle-btn" title="تبديل الوضع الليلي / النهاري">
             <i data-lucide="sun" id="theme-icon"></i>
+          </button>
+
+          <button id="btn-logout-topbar" class="action-icon-btn" style="color:var(--danger); border-color:rgba(239, 68, 68, 0.3);" title="تسجيل الخروج">
+            <i data-lucide="log-out"></i>
           </button>
 
           <button id="topbar-new-patient-btn" class="btn btn-primary btn-sm">

@@ -3,7 +3,7 @@
  * محرك إدارة الحالة المركزي والتخزين الفوري (State Management & Persistence Store)
  */
 
-const STORAGE_KEY = "LABCORE_CLINICAL_DATABASE_V5";
+const STORAGE_KEY = "LABCORE_CLINICAL_DATABASE_V6";
 
 class LabStore {
   constructor() {
@@ -372,8 +372,53 @@ class LabStore {
     const staff = (this.state.staff || []).find(s => s.id === staffId);
     if (!staff) return false;
     this.state.currentUserId = staffId;
+    localStorage.setItem("LABCORE_SESSION_USER", staffId);
     this.save();
     return staff;
+  }
+
+  // ==========================================
+  // المصادقة وجلسة الدخول (Authentication)
+  // ==========================================
+  authenticate(username, password) {
+    const u = (username || "").trim().toLowerCase();
+    const p = (password || "").trim();
+
+    const staffList = this.state.staff || [];
+    const user = staffList.find(s => 
+      s.username.toLowerCase() === u || 
+      (s.email && s.email.toLowerCase() === u) ||
+      (s.phone && s.phone === u)
+    );
+
+    if (!user) {
+      return { success: false, message: "اسم المستخدم غير مسجل بالنظام" };
+    }
+
+    if (user.password && user.password !== p) {
+      return { success: false, message: "كلمة المرور غير صحيحة" };
+    }
+
+    if (user.status !== "active") {
+      return { success: false, message: "هذا الحساب معطل حالياً، برجاء مراجعة مدير المختبر" };
+    }
+
+    this.state.currentUserId = user.id;
+    localStorage.setItem("LABCORE_SESSION_USER", user.id);
+    this.save();
+    return { success: true, user };
+  }
+
+  logout() {
+    localStorage.removeItem("LABCORE_SESSION_USER");
+    this.notify();
+  }
+
+  isAuthenticated() {
+    const sessionId = localStorage.getItem("LABCORE_SESSION_USER");
+    if (!sessionId) return false;
+    const user = (this.state.staff || []).find(s => s.id === sessionId);
+    return user && user.status === "active";
   }
 
   addStaff(staffData) {
@@ -383,6 +428,7 @@ class LabStore {
       id: `STAFF-${nextNum}`,
       name: staffData.name.trim(),
       username: staffData.username.trim().toLowerCase(),
+      password: staffData.password ? staffData.password.trim() : "123456",
       role: staffData.role || "technician",
       phone: staffData.phone ? staffData.phone.trim() : "",
       email: staffData.email ? staffData.email.trim() : "",

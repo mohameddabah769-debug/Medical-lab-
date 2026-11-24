@@ -19,33 +19,143 @@ class LabApp {
     if (window.store.state.labProfile && window.store.state.labProfile.nameAr) {
       const brandH1 = document.querySelector(".lab-brand-info h1");
       if (brandH1) brandH1.textContent = window.store.state.labProfile.nameAr;
+      const loginLabTitle = document.getElementById("login-lab-title");
+      if (loginLabTitle) loginLabTitle.textContent = window.store.state.labProfile.nameAr;
     }
 
-    // 2. ربط الساعة الحية
+    // 2. ربط المصادقة وبوابة تسجيل الدخول
+    this.initAuth();
+
+    // 3. ربط الساعة الحية
     this.startLiveClock();
 
-    // 3. ربط أحداث القائمة الجانبية والشريط العلوي
+    // 4. ربط أحداث القائمة الجانبية والشريط العلوي
     this.initNavigation();
     this.initThemeToggle();
     this.initBackupActions();
     this.initModals();
     this.initUserSwitcher();
 
-    // 4. تطبيق الصلاحيات والمستخدم النشط
+    // 5. تطبيق الصلاحيات والمستخدم النشط
     this.updateUserInterfaceForRole();
 
-    // 5. الاشتراك في تحديثات الحالة المركزية
+    // 6. الاشتراك في تحديثات الحالة المركزية
     window.store.subscribe((state) => {
       this.updateSidebarBadges(state);
-      // تحديث الشاشة الحالية والبيانات عند أي تغيير بالحالة
-      if (state.currentView) {
+      // تحديث الشاشة الحالية والبيانات عند أي تغيير بالحالة إذا كان مسجلاً
+      if (state.currentView && window.store.isAuthenticated()) {
         this.navigateTo(state.currentView, false);
       }
     });
 
-    // 5. التوجيه إلى الشاشة الافتراضية
-    this.navigateTo(window.store.state.currentView || "dashboard");
-    this.updateSidebarBadges(window.store.state);
+    // 7. إذا كان المستخدم مسجلاً، توجيهه للشاشة الافتراضية
+    if (window.store.isAuthenticated()) {
+      this.navigateTo(window.store.state.currentView || "dashboard");
+      this.updateSidebarBadges(window.store.state);
+    }
+  }
+
+  // ==========================================
+  // بوابة تسجيل الدخول وإدارة الجلسات (Authentication)
+  // ==========================================
+  initAuth() {
+    const loginForm = document.getElementById("login-form");
+    const usernameInput = document.getElementById("login-username");
+    const passwordInput = document.getElementById("login-password");
+    const togglePwdBtn = document.getElementById("btn-toggle-login-pwd");
+    const iconEye = document.getElementById("icon-pwd-eye");
+
+    // التحقق من الجلسة الحالية
+    if (window.store.isAuthenticated()) {
+      this.hideLogin();
+    } else {
+      this.showLogin();
+    }
+
+    // زر إظهار/إخفاء كلمة المرور
+    if (togglePwdBtn && passwordInput) {
+      togglePwdBtn.addEventListener("click", () => {
+        const isPwd = passwordInput.getAttribute("type") === "password";
+        passwordInput.setAttribute("type", isPwd ? "text" : "password");
+        if (iconEye) {
+          iconEye.setAttribute("data-lucide", isPwd ? "eye-off" : "eye");
+          if (window.lucide) window.lucide.createIcons();
+        }
+      });
+    }
+
+    // إرسال نموذج تسجيل الدخول
+    if (loginForm) {
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const username = usernameInput ? usernameInput.value : "";
+        const password = passwordInput ? passwordInput.value : "";
+
+        const result = window.store.authenticate(username, password);
+        if (result.success) {
+          this.hideLogin();
+          this.updateUserInterfaceForRole();
+          this.navigateTo(window.store.state.currentView || "dashboard");
+          this.showToast(`مرحباً بك ${result.user.name} في نظام المختبر`, "success");
+          if (passwordInput) passwordInput.value = "";
+        } else {
+          this.showToast(result.message || "بيانات الدخول غير صحيحة", "error");
+        }
+      });
+    }
+
+    // أزرار الدخول السريع لاختبار الصلاحيات
+    document.querySelectorAll(".quick-login-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const u = btn.getAttribute("data-user");
+        const p = btn.getAttribute("data-pass");
+        if (usernameInput) usernameInput.value = u;
+        if (passwordInput) passwordInput.value = p;
+        
+        const result = window.store.authenticate(u, p);
+        if (result.success) {
+          this.hideLogin();
+          this.updateUserInterfaceForRole();
+          this.navigateTo(window.store.state.currentView || "dashboard");
+          this.showToast(`تم تسجيل الدخول بصلاحية: ${result.user.name}`, "success");
+        } else {
+          this.showToast(result.message, "error");
+        }
+      });
+    });
+
+    // أزرار تسجيل الخروج
+    const handleLogout = () => {
+      window.store.logout();
+      this.showLogin();
+      this.showToast("تم تسجيل الخروج من النظام بنجاح", "info");
+    };
+
+    const logoutSidebar = document.getElementById("btn-logout-sidebar");
+    if (logoutSidebar) {
+      logoutSidebar.addEventListener("click", handleLogout);
+    }
+
+    const logoutTopbar = document.getElementById("btn-logout-topbar");
+    if (logoutTopbar) {
+      logoutTopbar.addEventListener("click", handleLogout);
+    }
+  }
+
+  showLogin() {
+    const loginPortal = document.getElementById("login-portal");
+    const mainLayout = document.getElementById("main-app-layout");
+    if (loginPortal) loginPortal.style.display = "flex";
+    if (mainLayout) mainLayout.style.display = "none";
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  hideLogin() {
+    const loginPortal = document.getElementById("login-portal");
+    const mainLayout = document.getElementById("main-app-layout");
+    if (loginPortal) loginPortal.style.display = "none";
+    if (mainLayout) mainLayout.style.display = "flex";
+    if (window.lucide) window.lucide.createIcons();
   }
 
   // ==========================================

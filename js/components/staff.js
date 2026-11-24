@@ -245,6 +245,11 @@ window.StaffComponent = {
           </div>
 
           <div class="form-group">
+            <label class="form-label">كلمة المرور للدخول *</label>
+            <input type="password" id="new-staff-password" class="form-control" placeholder="123456" value="123456" required />
+          </div>
+
+          <div class="form-group">
             <label class="form-label">الدور الوظيفي ومستوى الصلاحية *</label>
             <select id="new-staff-role" class="form-control" required>
               <option value="technician">أخصائي تحاليل / فني معمل (رصد نتائج)</option>
@@ -283,6 +288,7 @@ window.StaffComponent = {
     document.getElementById("btn-save-staff").addEventListener("click", () => {
       const name = document.getElementById("new-staff-name").value;
       const username = document.getElementById("new-staff-username").value;
+      const password = document.getElementById("new-staff-password").value;
       const role = document.getElementById("new-staff-role").value;
       const phone = document.getElementById("new-staff-phone").value;
       const email = document.getElementById("new-staff-email").value;
@@ -292,7 +298,7 @@ window.StaffComponent = {
         return;
       }
 
-      window.store.addStaff({ name, username, role, phone, email });
+      window.store.addStaff({ name, username, password, role, phone, email });
       if (window.app) window.app.updateUserInterfaceForRole();
       window.app.showToast(`تمت إضافة الموظف ${name} بنجاح إلى فريق العمل`, "success");
       window.app.closeModal();
