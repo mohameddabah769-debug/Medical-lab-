@@ -1588,7 +1588,7 @@ window.SEED_DATA = {
     {
       id: "STAFF-101",
       name: "أ.د أحمد المراغي",
-      username: "dr_sherif",
+      username: "dr_ahmed",
       password: "admin123",
       role: "director",
       phone: "01061615225",

@@ -21,6 +21,27 @@ class LabStore {
         const parsed = JSON.parse(raw);
         if (parsed && parsed.orders && parsed.tests) {
           parsed.developerInfo = window.SEED_DATA.developerInfo;
+          // تحديث فوري لأي بيانات سابقة باسم شريف عبد الوهاب إلى أ.د أحمد المراغي
+          if (parsed.labProfile && (parsed.labProfile.directorName?.includes("شريف") || parsed.labProfile.nameAr?.includes("رويال"))) {
+            parsed.labProfile = window.SEED_DATA.labProfile;
+          }
+          if (parsed.staff) {
+            parsed.staff.forEach(s => {
+              if (s.name?.includes("شريف") || s.username === "dr_sherif") {
+                s.name = "أ.د أحمد المراغي";
+                s.username = "dr_ahmed";
+                s.email = "serum.lab@gmail.com";
+                s.phone = "01061615225";
+              }
+            });
+          }
+          if (parsed.orders) {
+            parsed.orders.forEach(o => {
+              if (o.validatedBy?.includes("شريف")) {
+                o.validatedBy = "أ.د أحمد المراغي";
+              }
+            });
+          }
           return parsed;
         }
       }
