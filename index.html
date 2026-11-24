@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام إدارة معامل التحاليل الطبية | LabCore Pro</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+  <!-- Lucide Icons (SVG library for crisp medical icons) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- الشريط الجانبي (Sidebar) -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="lab-brand-icon">
+          <i data-lucide="microscope"></i>
+        </div>
+        <div class="lab-brand-info">
+          <h1>LabCore Pro</h1>
+          <p>إدارة المختبرات الطبية الذكية</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item active" data-view="dashboard">
+          <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span>
+          <span>لوحة التحكم</span>
+        </a>
+
+        <a class="nav-item" data-view="reception">
+          <span class="nav-icon"><i data-lucide="user-plus"></i></span>
+          <span>الاستقبال والحجز</span>
+          <span class="nav-badge" id="badge-today-orders">0</span>
+        </a>
+
+        <a class="nav-item" data-view="catalog">
+          <span class="nav-icon"><i data-lucide="flask-conical"></i></span>
+          <span>دليل التحاليل والباقات</span>
+        </a>
+
+        <a class="nav-item" data-view="results">
+          <span class="nav-icon"><i data-lucide="clipboard-check"></i></span>
+          <span>إدخال ومراجعة النتائج</span>
+          <span class="nav-badge" id="badge-pending-results">0</span>
+        </a>
+
+        <a class="nav-item" data-view="medical-report">
+          <span class="nav-icon"><i data-lucide="printer"></i></span>
+          <span>التقرير الطبي والطباعة</span>
+        </a>
+
+        <a class="nav-item" data-view="finance">
+          <span class="nav-icon"><i data-lucide="wallet"></i></span>
+          <span>الخزينة والمصروفات</span>
+        </a>
+
+        <a class="nav-item" data-view="settings">
+          <span class="nav-icon"><i data-lucide="settings"></i></span>
+          <span>إعدادات المعمل</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="backup-actions">
+          <button id="btn-export-backup" class="btn btn-outline btn-sm" title="تصدير نسخة احتياطية من كافة البيانات">
+            <i data-lucide="download"></i>
+            <span>تصدير JSON</span>
+          </button>
+          <button id="btn-import-backup-trigger" class="btn btn-outline btn-sm" title="استيراد نسخة احتياطية">
+            <i data-lucide="upload"></i>
+            <span>استيراد</span>
+          </button>
+          <input type="file" id="input-import-backup" accept=".json" style="display:none;">
+        </div>
+        <button id="btn-reset-demo" class="btn btn-sm btn-outline" style="color:var(--text-muted); font-size:0.75rem;" title="استعادة البيانات التأسيسية">
+          <i data-lucide="rotate-ccw"></i>
+          <span>إعادة ضبط البيانات التأسيسية</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- المحتوى الأساسي -->
+    <main class="main-wrapper">
+      <!-- الشريط العلوي (Topbar) -->
+      <header class="topbar">
+        <div class="topbar-title">
+          <button id="mobile-toggle-btn" class="action-icon-btn" style="display:none;" title="القائمة">
+            <i data-lucide="menu"></i>
+          </button>
+          <h2 id="current-page-title">لوحة التحكم والمؤشرات</h2>
+        </div>
+
+        <div class="topbar-actions">
+          <div id="live-clock" style="font-family:var(--font-mono); font-size:0.85rem; color:var(--text-muted); font-weight:600;"></div>
+          
+          <button id="theme-toggle-btn" class="theme-toggle-btn" title="تبديل الوضع الليلي / النهاري">
+            <i data-lucide="sun" id="theme-icon"></i>
+          </button>
+
+          <button id="topbar-new-patient-btn" class="btn btn-primary btn-sm">
+            <i data-lucide="plus"></i>
+            <span>حجز زيارة جديدة</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- حاويات الشاشات (View Containers) -->
+      <div class="page-container">
+        
+        <!-- 1. لوحة التحكم -->
+        <section id="view-dashboard" class="app-view"></section>
+
+        <!-- 2. الاستقبال وحجز التحاليل -->
+        <section id="view-reception" class="app-view" style="display:none;"></section>
+
+        <!-- 3. دليل التحاليل والباقات -->
+        <section id="view-catalog" class="app-view" style="display:none;"></section>
+
+        <!-- 4. إدخال ومراجعة النتائج الطبية -->
+        <section id="view-results" class="app-view" style="display:none;"></section>
+
+        <!-- 5. التقرير الطبي والطباعة -->
+        <section id="view-medical-report" class="app-view" style="display:none;"></section>
+
+        <!-- 6. الخزينة والمصروفات والتعاقدات -->
+        <section id="view-finance" class="app-view" style="display:none;"></section>
+
+        <!-- 7. إعدادات وهوية المختبر -->
+        <section id="view-settings" class="app-view" style="display:none;"></section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- حاوية التنبيهات المنبثقة السريعة (Toast Alerts) -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- النافذة المنبثقة العامة (Modal) -->
+  <div id="app-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="modal-title" class="card-title"></h3>
+        <button id="modal-close-btn" class="action-icon-btn" style="border:none; width:32px; height:32px;">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+      <div id="modal-footer" class="modal-footer"></div>
+    </div>
+  </div>
+
+  <!-- ملفات الجافاسكريبت والموديولات -->
+  <script src="js/seedData.js"></script>
+  <script src="js/utils/validator.js"></script>
+  <script src="js/utils/barcode.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/components/dashboard.js"></script>
+  <script src="js/components/reception.js"></script>
+  <script src="js/components/catalog.js"></script>
+  <script src="js/components/labResults.js"></script>
+  <script src="js/components/medicalReport.js"></script>
+  <script src="js/components/finance.js"></script>
+  <script src="js/components/settings.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

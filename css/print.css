@@ -1,0 +1,249 @@
+/* ==========================================================================
+   نظام إدارة المختبرات الطبية - LabCore
+   ملف تنسيقات الطباعة الرسمية للتقارير الطبية (Print CSS - A4 Standard)
+   ========================================================================== */
+
+@page {
+  size: A4 portrait;
+  margin: 10mm 12mm 12mm 12mm;
+}
+
+@media print {
+  /* إخفاء واجهة التطبيق التفاعلية */
+  .sidebar,
+  .topbar,
+  .modal-overlay,
+  .toast-container,
+  .btn,
+  .no-print,
+  .page-header-actions,
+  .nav-item,
+  .backup-actions {
+    display: none !important;
+  }
+
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    line-height: 1.4 !important;
+    direction: rtl !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .app-layout {
+    display: block !important;
+  }
+
+  .main-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .page-container {
+    padding: 0 !important;
+  }
+
+  /* إخفاء كافة الشاشات ما عدا شاشة التقرير الطبي للطباعة */
+  .app-view:not(#view-medical-report) {
+    display: none !important;
+  }
+
+  #view-medical-report {
+    display: block !important;
+  }
+
+  .print-page {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    page-break-after: always;
+  }
+
+  /* ترويسة التقرير الطبي الرسمي */
+  .print-header {
+    border-bottom: 2px solid #0284c7;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .lab-print-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .lab-print-logo svg {
+    width: 48px;
+    height: 48px;
+    fill: #0284c7;
+  }
+
+  .lab-print-titles h1 {
+    font-size: 16pt;
+    font-weight: 800;
+    color: #0284c7;
+    margin: 0;
+  }
+
+  .lab-print-titles p {
+    font-size: 9pt;
+    color: #475569;
+    margin: 2px 0 0 0;
+  }
+
+  .lab-print-meta {
+    text-align: left;
+    font-size: 8.5pt;
+    color: #334155;
+    direction: ltr;
+  }
+
+  /* جدول بيانات المريض والزيارة */
+  .patient-info-box {
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    background-color: #f8fafc !important;
+  }
+
+  .patient-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px 16px;
+    font-size: 9.5pt;
+  }
+
+  .info-item {
+    display: flex;
+    gap: 6px;
+  }
+
+  .info-item .info-label {
+    font-weight: 700;
+    color: #475569;
+  }
+
+  .info-item .info-val {
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  /* عنوان التقرير والفحص */
+  .report-section-title {
+    background-color: #e0f2fe !important;
+    color: #0369a1 !important;
+    padding: 6px 12px;
+    font-size: 11pt;
+    font-weight: 800;
+    border-right: 4px solid #0284c7;
+    margin: 12px 0 8px 0;
+  }
+
+  /* جدول نتائج التحاليل للطباعة */
+  .print-results-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-bottom: 20px;
+    font-size: 9.5pt;
+  }
+
+  .print-results-table th {
+    background-color: #f1f5f9 !important;
+    color: #1e293b !important;
+    border: 1px solid #94a3b8 !important;
+    padding: 6px 10px !important;
+    font-weight: 700 !important;
+    text-align: right;
+  }
+
+  .print-results-table td {
+    border: 1px solid #cbd5e1 !important;
+    padding: 6px 10px !important;
+    vertical-align: middle;
+  }
+
+  .print-results-table tr:nth-child(even) {
+    background-color: #f8fafc !important;
+  }
+
+  /* تمييز النتائج الشاذة في الطباعة */
+  .print-flag-high {
+    font-weight: 900 !important;
+    color: #dc2626 !important;
+  }
+
+  .print-flag-low {
+    font-weight: 900 !important;
+    color: #2563eb !important;
+  }
+
+  .print-flag-normal {
+    font-weight: 600 !important;
+    color: #059669 !important;
+  }
+
+  /* تذييل التقرير والتوقيعات والختم */
+  .print-footer-container {
+    margin-top: 30px;
+    border-top: 1px dashed #cbd5e1;
+    padding-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .lab-director-signature {
+    text-align: center;
+    width: 200px;
+  }
+
+  .signature-title {
+    font-weight: 700;
+    font-size: 10pt;
+    color: #1e293b;
+    margin-bottom: 35px;
+  }
+
+  .signature-line {
+    border-top: 1px solid #64748b;
+    padding-top: 4px;
+    font-size: 8.5pt;
+    color: #475569;
+  }
+
+  .lab-stamp-box {
+    width: 110px;
+    height: 110px;
+    border: 2px dashed #0284c7;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #0284c7;
+    font-weight: 700;
+    font-size: 8pt;
+    text-align: center;
+    transform: rotate(-10deg);
+  }
+
+  .print-legal-notice {
+    text-align: center;
+    font-size: 7.5pt;
+    color: #64748b;
+    margin-top: 15px;
+  }
+}
