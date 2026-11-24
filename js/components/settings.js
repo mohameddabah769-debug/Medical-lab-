@@ -78,6 +78,51 @@ window.SettingsComponent = {
           </div>
         </form>
 
+        <!-- بطاقة المعاينة الحية (Live Preview Card) -->
+        <div id="lab-live-preview" class="card" style="max-width:900px; margin:20px auto 0; border:2px dashed var(--primary); background:var(--bg-tertiary);">
+          <div class="card-header" style="border-bottom:1px solid var(--border-color); padding-bottom:12px; margin-bottom:16px;">
+            <div class="card-title">
+              <i data-lucide="eye"></i>
+              <span>معاينة حية — ترويسة وتذييل التقرير الطبي الرسمي</span>
+            </div>
+            <span style="font-size:0.78rem; color:var(--primary); font-weight:700; background:rgba(2,132,199,0.1); padding:3px 10px; border-radius:20px;">
+              🔴 تتحدث فورياً أثناء الكتابة قبل الحفظ
+            </span>
+          </div>
+
+          <!-- محاكاة ترويسة التقرير الطبي -->
+          <div style="border:2px solid #0284c7; border-radius:10px; padding:18px; background:#ffffff; color:#0f172a; font-family:'Cairo',sans-serif; direction:rtl;">
+            <!-- Header -->
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #0284c7; padding-bottom:12px; margin-bottom:12px;">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <div style="width:50px; height:50px; background:linear-gradient(135deg,#0284c7,#0ea5e9); border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px;">
+                  🔬
+                </div>
+                <div>
+                  <div id="preview-lab-name-ar" style="font-size:1.15rem; font-weight:900; color:#0284c7;">${lab.nameAr || 'اسم المختبر بالعربية'}</div>
+                  <div id="preview-lab-name-en" style="font-size:0.82rem; color:#334155; font-weight:600;">${lab.nameEn || 'Lab Name in English'}</div>
+                  <div id="preview-lab-director" style="font-size:0.75rem; color:#64748b;">مدير المعمل: ${lab.directorName || 'اسم المدير'} — <span id="preview-lab-director-title">${lab.directorTitle || 'الدرجة العلمية'}</span></div>
+                </div>
+              </div>
+              <div style="text-align:left; font-size:0.78rem; color:#475569; border:1px solid #cbd5e1; border-radius:8px; padding:8px 12px; min-width:160px;">
+                <div style="margin-bottom:4px;"><strong>📍</strong> <span id="preview-lab-address">${lab.address || 'العنوان'}</span></div>
+                <div><strong>📞</strong> <span id="preview-lab-phone">${lab.phone || 'رقم الهاتف'}</span></div>
+              </div>
+            </div>
+            <!-- Sample report body indicator -->
+            <div style="background:#f1f5f9; border-radius:6px; padding:10px 14px; font-size:0.78rem; color:#64748b; text-align:center; margin-bottom:12px;">
+              [ محتوى التقرير الطبي والنتائج والمعايير المرجعية ]
+            </div>
+            <!-- Footer -->
+            <div style="border-top:2px solid #0284c7; padding-top:10px; display:flex; justify-content:space-between; align-items:center;">
+              <div id="preview-lab-footer" style="font-size:0.72rem; color:#64748b; flex:1;">${lab.footerNotice || 'ملاحظة قانونية / تذييل التقرير'}</div>
+              <div style="font-size:0.68rem; color:#94a3b8; text-align:left; border-right:1px solid #e2e8f0; padding-right:12px; margin-right:12px;">
+                سند لتطوير البرمجيات<br>م/ محمد الدباح
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- بطاقة حقوق الملكية الفكرية والجهة المطورة للنظام -->
         <div class="developer-license-card">
           <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px; margin-bottom:14px;">
@@ -135,6 +180,32 @@ window.SettingsComponent = {
     const form = document.getElementById("lab-settings-form");
     if (!form) return;
 
+    // ربط الحقول بالمعاينة الحية (Real-time Live Preview)
+    const liveFields = [
+      'setting-lab-name-ar', 'setting-lab-name-en',
+      'setting-director-name', 'setting-director-title',
+      'setting-phone', 'setting-address', 'setting-footer-notice'
+    ];
+    liveFields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', () => {
+          const preview = {
+            nameAr: document.getElementById('setting-lab-name-ar').value,
+            nameEn: document.getElementById('setting-lab-name-en').value,
+            directorName: document.getElementById('setting-director-name').value,
+            directorTitle: document.getElementById('setting-director-title').value,
+            phone: document.getElementById('setting-phone').value,
+            address: document.getElementById('setting-address').value,
+            footerNotice: document.getElementById('setting-footer-notice').value,
+          };
+          if (window.app && typeof window.app.syncLabProfileUI === 'function') {
+            window.app.syncLabProfileUI(preview);
+          }
+        });
+      }
+    });
+
     form.addEventListener("submit", (e) => {
       e.preventDefault();
 
@@ -150,16 +221,10 @@ window.SettingsComponent = {
         footerNotice: document.getElementById("setting-footer-notice").value.trim()
       };
 
-      // حفظ الإعدادات في المتجر المركزي
+      // حفظ الإعدادات في المتجر المركزي (يُطلق notify تلقائياً → يُحدّث كل الواجهة)
       window.store.updateLabProfile(updatedProfile);
 
-      // تحديث اسم المختبر في الشريط الجانبي فوراً
-      const brandH1 = document.querySelector(".lab-brand-info h1");
-      if (brandH1) {
-        brandH1.textContent = updatedProfile.nameAr;
-      }
-
-      window.app.showToast("تم حفظ إعدادات وهوية المختبر بنجاح وتحديث كافة التقارير", "success");
+      window.app.showToast("✅ تم حفظ إعدادات المختبر وتحديث كافة التقارير والواجهات فورياً", "success");
     });
   }
 };

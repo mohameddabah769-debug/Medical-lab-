@@ -42,6 +42,8 @@ class LabApp {
     // 6. الاشتراك في تحديثات الحالة المركزية
     window.store.subscribe((state) => {
       this.updateSidebarBadges(state);
+      // تحديث بيانات المعمل في كل أماكن الظهور عند تغيير labProfile
+      this.syncLabProfileUI(state.labProfile);
       // تحديث الشاشة الحالية والبيانات عند أي تغيير بالحالة إذا كان مسجلاً
       if (state.currentView && window.store.isAuthenticated()) {
         this.navigateTo(state.currentView, false);
@@ -283,6 +285,38 @@ class LabApp {
     if (window.lucide) {
       window.lucide.createIcons();
     }
+  }
+
+  // ==========================================
+  // مزامنة بيانات المعمل في كل أماكن الظهور (Live Lab Profile Sync)
+  // ==========================================
+  syncLabProfileUI(lab) {
+    if (!lab) return;
+    // اسم المعمل في الشريط الجانبي
+    const brandH1 = document.querySelector('.lab-brand-info h1');
+    if (brandH1) brandH1.textContent = lab.nameAr || '';
+    const brandP = document.querySelector('.lab-brand-info p');
+    if (brandP) brandP.textContent = lab.nameEn || 'إدارة المختبرات الطبية الذكية';
+    // عنوان شاشة تسجيل الدخول
+    const loginTitle = document.getElementById('login-lab-title');
+    if (loginTitle) loginTitle.textContent = lab.nameAr || '';
+    // معاينة حية في صفحة الإعدادات (إن كانت مفتوحة)
+    const previewNameAr = document.getElementById('preview-lab-name-ar');
+    if (previewNameAr) previewNameAr.textContent = lab.nameAr || '';
+    const previewNameEn = document.getElementById('preview-lab-name-en');
+    if (previewNameEn) previewNameEn.textContent = lab.nameEn || '';
+    const previewPhone = document.getElementById('preview-lab-phone');
+    if (previewPhone) previewPhone.textContent = lab.phone || '';
+    const previewAddress = document.getElementById('preview-lab-address');
+    if (previewAddress) previewAddress.textContent = lab.address || '';
+    const previewDirector = document.getElementById('preview-lab-director');
+    if (previewDirector) previewDirector.textContent = lab.directorName || '';
+    const previewTitle = document.getElementById('preview-lab-director-title');
+    if (previewTitle) previewTitle.textContent = lab.directorTitle || '';
+    const previewFooter = document.getElementById('preview-lab-footer');
+    if (previewFooter) previewFooter.textContent = lab.footerNotice || '';
+    // عنوان نافذة المتصفح
+    document.title = (lab.nameAr || 'LabCore Pro') + ' | نظام إدارة المختبرات الطبية';
   }
 
   updateSidebarBadges(state) {
