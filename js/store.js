@@ -697,6 +697,200 @@ class LabStore {
   }
 
   // ==========================================
+  // التقارير الدورية وساعات الذروة (Periodic Analytics & Peak Hours)
+  // ==========================================
+  getPeriodicAnalytics(period = "daily") {
+    const now = new Date();
+    const todayStr = now.toISOString().split("T")[0];
+    const orders = this.state.orders || [];
+    const expenses = this.state.expenses || [];
+
+    let filteredOrders = [];
+    let filteredExpenses = [];
+    let periodLabel = "";
+    let breakdown = [];
+
+    if (period === "daily") {
+      periodLabel = `تقرير اليوم (${now.toLocaleDateString("ar-EG")})`;
+      filteredOrders = orders.filter(o => o.createdAt && o.createdAt.startsWith(todayStr));
+      if (filteredOrders.length === 0 && orders.length > 0) {
+        const latestDate = orders[0].createdAt.split("T")[0];
+        filteredOrders = orders.filter(o => o.createdAt && o.createdAt.startsWith(latestDate));
+        filteredExpenses = expenses.filter(e => e.date && e.date.startsWith(latestDate));
+        periodLabel = `تقرير تشغيل اليوم (${latestDate})`;
+      } else {
+        filteredExpenses = expenses.filter(e => e.date && e.date.startsWith(todayStr));
+      }
+
+      const morning = filteredOrders.filter(o => { const h = new Date(o.createdAt).getHours(); return h >= 8 && h < 13; });
+      const afternoon = filteredOrders.filter(o => { const h = new Date(o.createdAt).getHours(); return h >= 13 && h < 17; });
+      const evening = filteredOrders.filter(o => { const h = new Date(o.createdAt).getHours(); return h >= 17; });
+
+      breakdown = [
+        { label: "الفترة الصباحية (8 ص - 1 م)", count: morning.length, revenue: morning.reduce((s, o) => s + (Number(o.paidAmount) || 0), 0) },
+        { label: "فترة الظهيرة (1 م - 5 م)", count: afternoon.length, revenue: afternoon.reduce((s, o) => s + (Number(o.paidAmount) || 0), 0) },
+        { label: "الفترة المسائية (5 م - 11 م)", count: evening.length, revenue: evening.reduce((s, o) => s + (Number(o.paidAmount) || 0), 0) }
+      ];
+    } else if (period === "weekly") {
+      periodLabel = "التقرير الأسبوعي (آخر 7 أيام)";
+      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      filteredOrders = orders.filter(o => new Date(o.createdAt) >= weekAgo);
+      if (filteredOrders.length === 0) filteredOrders = orders.slice(0, 15);
+      filteredExpenses = expenses.filter(e => new Date(e.date) >= weekAgo);
+
+      const daysArabic = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+        const dStr = d.toISOString().split("T")[0];
+        const dayOrders = orders.filter(o => o.createdAt && o.createdAt.startsWith(dStr));
+        const dayRev = dayOrders.reduce((s, o) => s + (Number(o.paidAmount) || 0), 0);
+        breakdown.push({
+          label: `${daysArabic[d.getDay()]} (${d.getDate()}/${d.getMonth() + 1})`,
+          count: dayOrders.length,
+          revenue: dayRev
+        });
+      }
+    } else if (period === "monthly") {
+      const monthPrefix = todayStr.slice(0, 7);
+      periodLabel = `التقرير الشهري (${now.toLocaleDateString("ar-EG", { month: "long", year: "numeric" })})`;
+      filteredOrders = orders.filter(o => o.createdAt && o.createdAt.startsWith(monthPrefix));
+      if (filteredOrders.length === 0) filteredOrders = orders;
+      filteredExpenses = expenses.filter(e => e.date && e.date.startsWith(monthPrefix));
+
+      for (let w = 1; w <= 4; w++) {
+        const startDay = (w - 1) * 7 + 1;
+        const endDay = w * 7;
+        const wOrders = filteredOrders.filter(o => {
+          const day = new Date(o.createdAt).getDate();
+          return day >= startDay && (w === 4 ? day <= 31 : day <= endDay);
+        });
+        breakdown.push({
+          label: `الأسبوع ${w} (${startDay}-${Math.min(endDay, 30)})`,
+          count: wOrders.length,
+          revenue: wOrders.reduce((s, o) => s + (Number(o.paidAmount) || 0), 0)
+        });
+      }
+    } else if (period === "yearly") {
+      const yearPrefix = todayStr.slice(0, 4);
+      periodLabel = `التقرير السنوي لعام (${now.getFullYear()})`;
+      filteredOrders = orders.filter(o => o.createdAt && o.createdAt.startsWith(yearPrefix));
+      if (filteredOrders.length === 0) filteredOrders = orders;
+      filteredExpenses = expenses.filter(e => e.date && e.date.startsWith(yearPrefix));
+
+      const months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+      months.forEach((mName, mIdx) => {
+        const mKey = `${yearPrefix}-${String(mIdx + 1).padStart(2, "0")}`;
+        const mOrders = filteredOrders.filter(o => o.createdAt && o.createdAt.startsWith(mKey));
+        breakdown.push({
+          label: mName,
+          count: mOrders.length,
+          revenue: mOrders.reduce((s, o) => s + (Number(o.paidAmount) || 0), 0)
+        });
+      });
+    }
+
+    const totalOrders = filteredOrders.length;
+    const totalRevenue = filteredOrders.reduce((sum, o) => sum + (Number(o.paidAmount) || 0), 0);
+    const totalInvoiced = filteredOrders.reduce((sum, o) => sum + (Number(o.netAmount) || 0), 0);
+    const totalRemaining = filteredOrders.reduce((sum, o) => sum + (Number(o.remainingAmount) || 0), 0);
+    const totalExpenses = filteredExpenses.reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+    const netProfit = totalRevenue - totalExpenses;
+    const avgOrderValue = totalOrders > 0 ? Math.round(totalInvoiced / totalOrders) : 0;
+    const completedCount = filteredOrders.filter(o => o.status === "validated").length;
+
+    const testCounts = {};
+    filteredOrders.forEach(o => {
+      (o.testsRequested || []).forEach(tId => {
+        testCounts[tId] = (testCounts[tId] || 0) + 1;
+      });
+    });
+    const topTests = Object.entries(testCounts)
+      .map(([id, count]) => {
+        const t = this.state.tests.find(item => item.id === id) || { code: id, nameAr: id, price: 0 };
+        return { ...t, count, totalVal: count * (t.price || 0) };
+      })
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+    return {
+      period,
+      periodLabel,
+      totalOrders,
+      totalRevenue,
+      totalInvoiced,
+      totalRemaining,
+      totalExpenses,
+      netProfit,
+      avgOrderValue,
+      completedCount,
+      completionRate: totalOrders > 0 ? Math.round((completedCount / totalOrders) * 100) : 100,
+      breakdown,
+      topTests
+    };
+  }
+
+  getPeakHoursAnalytics() {
+    const orders = this.state.orders || [];
+    
+    const hoursData = [];
+    for (let h = 8; h <= 23; h++) {
+      hoursData.push({
+        hour: h,
+        label: (h > 12 ? (h - 12) + " م" : (h === 12 ? "12 م" : h + " ص")),
+        fullTime: `${String(h).padStart(2, "0")}:00`,
+        count: 0,
+        revenue: 0
+      });
+    }
+
+    orders.forEach(order => {
+      if (order.createdAt) {
+        const d = new Date(order.createdAt);
+        const h = d.getHours();
+        const slot = hoursData.find(item => item.hour === h);
+        if (slot) {
+          slot.count++;
+          slot.revenue += (Number(order.paidAmount) || 0);
+        }
+      }
+    });
+
+    let maxHour = hoursData[0];
+    hoursData.forEach(item => {
+      if (item.count > maxHour.count) {
+        maxHour = item;
+      }
+    });
+
+    const totalOrders = orders.length || 1;
+    const maxCount = Math.max(...hoursData.map(h => h.count), 1);
+
+    hoursData.forEach(item => {
+      item.percentage = Math.round((item.count / totalOrders) * 100);
+      item.barHeight = Math.max(12, Math.round((item.count / maxCount) * 100));
+      item.isPeak = item.hour === maxHour.hour && maxHour.count > 0;
+      if (item.count >= 3) item.trafficLevel = "ذروة وازدحام مرتفع 🔥";
+      else if (item.count >= 1) item.trafficLevel = "نشاط متوسط ⚡";
+      else item.trafficLevel = "إقبال هادئ ☕";
+    });
+
+    const morningShift = hoursData.filter(h => h.hour >= 8 && h.hour < 14).reduce((s, h) => s + h.count, 0);
+    const eveningShift = hoursData.filter(h => h.hour >= 14 && h.hour <= 23).reduce((s, h) => s + h.count, 0);
+
+    return {
+      hoursData,
+      peakHour: maxHour,
+      peakHourLabel: maxHour && maxHour.count > 0 ? `${maxHour.label} (${maxHour.count} زيارات)` : "لا توجد زيارات كافية بعد",
+      morningShiftCount: morningShift,
+      eveningShiftCount: eveningShift,
+      busiestShift: morningShift >= eveningShift ? "الفترة الصباحية (سحب العينات والصيام)" : "الفترة المسائية (العيادات الخارجية)",
+      recommendation: maxHour && maxHour.count > 0
+        ? `ساعة الذروة اليومية القصوى هي (${maxHour.label}). يُوصى بتوفير كادر تمريض واستقبال إضافي خلال هذه الساعة لتسريع سحب العينات وتجنب تكدس المرضى.`
+        : "ساعات العمل موزعة بانتظام دون فترات ازدحام حرجة."
+    };
+  }
+
+  // ==========================================
   // النسخ الاحتياطي (Export / Import / Reset)
   // ==========================================
   exportBackupJSON() {
