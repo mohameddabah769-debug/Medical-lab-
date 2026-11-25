@@ -140,7 +140,7 @@ window.ReceptionComponent = {
                         <td><span class="badge badge-info" style="font-size:0.75rem;">${t.category}</span></td>
                         <td><strong>${t.price} ج.م</strong></td>
                         <td>
-                          <button type="button" class="btn btn-primary btn-sm btn-select-item" data-id="${t.id}" data-name="${t.nameAr} (${t.code})" data-price="${t.price}">
+                          <button type="button" class="btn btn-primary btn-sm btn-select-item" data-id="${t.id}" data-name="${t.nameAr.includes(t.code) ? t.nameAr : t.nameAr + ' (' + t.code + ')'}" data-price="${t.price}">
                             <i data-lucide="plus" style="width:14px;height:14px;"></i>
                           </button>
                         </td>
@@ -579,7 +579,8 @@ window.ReceptionComponent = {
           <ul style="padding-right:20px; font-size:0.85rem; line-height:1.8;">
             ${testsRequested.map(tId => {
               const t = window.store.state.tests.find(item => item.id === tId);
-              return `<li><strong>${t ? t.nameAr + ' (' + t.code + ')' : tId}</strong> ${t && t.price ? `<span style="color:var(--text-muted); font-size:0.8rem; margin-right:4px;">(${t.price} ج.م)</span>` : ''} ${t && t.tube ? `<span style="font-size:0.75rem; color:var(--primary); margin-right:4px;">[${t.tube}]</span>` : ''}</li>`;
+              const displayName = t ? (t.nameAr.includes(t.code) ? t.nameAr : t.nameAr + ' (' + t.code + ')') : tId;
+              return `<li><strong>${displayName}</strong> ${t && t.price ? `<span style="color:var(--text-muted); font-size:0.8rem; margin-right:4px;">(${t.price} ج.م)</span>` : ''} ${t && t.tube ? `<span style="font-size:0.75rem; color:var(--primary); margin-right:4px;">[${t.tube}]</span>` : ''}</li>`;
             }).join("")}
           </ul>
         </div>
