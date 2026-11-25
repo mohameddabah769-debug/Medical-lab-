@@ -385,15 +385,23 @@ class LabApp {
     const role = window.store.getCurrentRole();
     if (!user || !role) return;
 
-    // تحديث بطاقة المستخدم في الشريط العلوي
+    // تحديث بطاقة المستخدم النشط في الشريط العلوي
     const avatarEl = document.getElementById("topbar-user-avatar");
     const nameEl = document.getElementById("topbar-user-name");
     const roleEl = document.getElementById("topbar-user-role");
     const select = document.getElementById("topbar-user-switch-select");
 
-    if (avatarEl) avatarEl.textContent = user.name.trim().charAt(0);
+    const roleTitle = role.title ? role.title.split('/')[0].trim() : (role.id || "مستخدم");
+
+    if (avatarEl) avatarEl.textContent = (user.name || "م").trim().charAt(0);
     if (nameEl) nameEl.textContent = user.name;
-    if (roleEl) roleEl.textContent = role.title;
+    if (roleEl) roleEl.textContent = roleTitle;
+
+    // تحديث بطاقة المستخدم النشط في الشريط الجانبي
+    const sidebarNameEl = document.getElementById("sidebar-logged-user-name");
+    const sidebarRoleEl = document.getElementById("sidebar-logged-user-role");
+    if (sidebarNameEl) sidebarNameEl.textContent = user.name;
+    if (sidebarRoleEl) sidebarRoleEl.textContent = roleTitle;
 
     // تحديث خيارات القائمة المنسدلة
     if (select) {
