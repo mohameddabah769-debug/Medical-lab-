@@ -314,11 +314,13 @@ window.ReceptionComponent = {
 
     // إضافة تحليل/باقة إلى السلة
     container.querySelectorAll(".btn-select-item").forEach(btn => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
         const id = btn.getAttribute("data-id");
         const name = btn.getAttribute("data-name");
         const price = parseFloat(btn.getAttribute("data-price")) || 0;
 
+        if (!id) return;
         if (this.selectedItems.some(i => i.id === id)) {
           window.app.showToast("هذا التحليل مضاف بالفعل في السلة", "info");
           return;
@@ -326,6 +328,17 @@ window.ReceptionComponent = {
 
         this.selectedItems.push({ id, name, price });
         this.updateCartUI();
+        window.app.showToast(`تمت إضافة: ${name}`, "success");
+      });
+    });
+
+    // إتاحة النقر على أي مكان داخل صف التحليل لإضافته مباشرة تيسيراً للاستخدام
+    container.querySelectorAll(".test-row-item").forEach(row => {
+      row.style.cursor = "pointer";
+      row.addEventListener("click", (e) => {
+        if (e.target.closest(".btn-select-item")) return;
+        const btn = row.querySelector(".btn-select-item");
+        if (btn) btn.click();
       });
     });
 
@@ -421,58 +434,91 @@ window.ReceptionComponent = {
   },
 
   handleFormSubmit() {
-    if (this.selectedItems.length === 0) {
+    if (!this.selectedItems || this.selectedItems.length === 0) {
       window.app.showToast("يرجى اختيار تحليل واحد على الأقل للمريض", "error");
       return;
     }
 
-    const patientName = document.getElementById("patient-name").value;
-    const patientAge = document.getElementById("patient-age").value;
-    const patientGender = document.getElementById("patient-gender").value;
-    const patientPhone = document.getElementById("patient-phone").value;
-    const patientDoctor = document.getElementById("patient-doctor").value;
-    const patientContract = document.getElementById("patient-contract").value;
+    // تجميد قائمة التحاليل المختارة محلياً قبل أي عمليات حفظ لمنع أي تصفير للحالة
+    const itemsToOrder = [...this.selectedItems];
+    const testIds = itemsToOrder.map(i => i.id).filter(Boolean);
 
-    const discountAmount = parseFloat(document.getElementById("calc-discount").value) || 0;
-    const paidAmount = parseFloat(document.getElementById("calc-paid").value) || 0;
-    const paymentMethod = document.getElementById("calc-payment-method").value;
-
-    // 1. تسجيل مريض جديد أو تحديث بيانات المريض السابق المسجل
-    let targetPatient;
-    if (this.matchedPatientId) {
-      targetPatient = window.store.updatePatient(this.matchedPatientId, {
-        name: patientName,
-        age: patientAge,
-        gender: patientGender,
-        phone: patientPhone,
-        doctor: patientDoctor,
-        contractId: patientContract || null
-      });
-    } else {
-      targetPatient = window.store.addPatient({
-        name: patientName,
-        age: patientAge,
-        gender: patientGender,
-        phone: patientPhone,
-        doctor: patientDoctor,
-        contractId: patientContract || null
-      });
+    if (testIds.length === 0) {
+      window.app.showToast("يرجى اختيار تحليل واحد على الأقل للمريض", "error");
+      return;
     }
 
-    // 2. إنشاء الطلب
-    const testIds = this.selectedItems.map(i => i.id);
-    const newOrder = window.store.createOrder({
-      patientId: targetPatient.id,
-      testIds,
-      discountAmount,
-      paidAmount,
-      paymentMethod
-    });
+    const patientName = (document.getElementById("patient-name")?.value || "").trim();
+    if (!patientName) {
+      window.app.showToast("يرجى إدخال اسم المريض", "error");
+      document.getElementById("patient-name")?.focus();
+      return;
+    }
 
-    window.app.showToast(`تم حجز الزيارة بنجاح بكود عينة: ${newOrder.barcode}`, "success");
+    const patientAge = document.getElementById("patient-age")?.value || "";
+    const patientGender = document.getElementById("patient-gender")?.value || "male";
+    const patientPhone = (document.getElementById("patient-phone")?.value || "").trim();
+    const patientDoctor = (document.getElementById("patient-doctor")?.value || "").trim();
+    const patientContract = document.getElementById("patient-contract")?.value || "";
 
-    // 3. عرض إيصال الاستلام الفوري مع الباركود في نافذة Modal
-    this.showReceiptModal(newOrder, targetPatient);
+    const discountAmount = parseFloat(document.getElementById("calc-discount")?.value) || 0;
+    const paidAmount = parseFloat(document.getElementById("calc-paid")?.value) || 0;
+    const paymentMethod = document.getElementById("calc-payment-method")?.value || "cash";
+
+    const submitBtn = document.querySelector("#reception-order-form button[type='submit']");
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+      // 1. تسجيل مريض جديد أو تحديث بيانات المريض السابق المسجل
+      let targetPatient;
+      if (this.matchedPatientId) {
+        targetPatient = window.store.updatePatient(this.matchedPatientId, {
+          name: patientName,
+          age: patientAge,
+          gender: patientGender,
+          phone: patientPhone,
+          doctor: patientDoctor,
+          contractId: patientContract || null
+        });
+      } else {
+        targetPatient = window.store.addPatient({
+          name: patientName,
+          age: patientAge,
+          gender: patientGender,
+          phone: patientPhone,
+          doctor: patientDoctor,
+          contractId: patientContract || null
+        });
+      }
+
+      // 2. إنشاء الطلب بقائمة التحاليل المجمدة مسبقاً
+      const newOrder = window.store.createOrder({
+        patientId: targetPatient.id,
+        testIds,
+        discountAmount,
+        paidAmount,
+        paymentMethod
+      });
+
+      if (!newOrder) {
+        if (submitBtn) submitBtn.disabled = false;
+        window.app.showToast("حدث خطأ أثناء إصدار أمر التحليل", "error");
+        return;
+      }
+
+      // تفريغ سلة الحجز بعد نجاح إنشاء الطلب
+      this.selectedItems = [];
+      this.matchedPatientId = null;
+
+      window.app.showToast(`تم حجز الزيارة بنجاح بكود عينة: ${newOrder.barcode}`, "success");
+
+      // 3. عرض إيصال الاستلام الفوري مع الباركود في نافذة Modal
+      this.showReceiptModal(newOrder, targetPatient);
+    } catch (err) {
+      console.error("خطأ أثناء تسجيل الحجز:", err);
+      if (submitBtn) submitBtn.disabled = false;
+      window.app.showToast("تعذر استكمال الحجز، يرجى التحقق من المدخلات", "error");
+    }
   },
 
   showReceiptModal(order, patient) {

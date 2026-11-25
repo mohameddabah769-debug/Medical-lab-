@@ -46,9 +46,9 @@ class LabApp {
       this.updateSidebarBadges(state);
       // تحديث بيانات المعمل في كل أماكن الظهور عند تغيير labProfile
       this.syncLabProfileUI(state.labProfile);
-      // تحديث الشاشة الحالية والبيانات عند أي تغيير بالحالة إذا كان مسجلاً
-      if (state.currentView && window.store.isAuthenticated()) {
-        this.navigateTo(state.currentView, false);
+      // تحديث لوحة التحكم فقط تلقائياً إذا كانت معروضة لتفادي إعادة بناء النماذج وشاشات الإدخال النشطة
+      if (state.currentView === "dashboard" && window.store.isAuthenticated()) {
+        window.DashboardComponent.render();
       }
     });
 

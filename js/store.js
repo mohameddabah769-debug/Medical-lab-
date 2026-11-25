@@ -41,6 +41,11 @@ class LabStore {
                 o.validatedBy = "أ.د أحمد المراغي";
               }
             });
+            // استبعاد أي طلبات تالفة فارغة التحاليل وإجماليها 0 من التخزين القديم
+            parsed.orders = parsed.orders.filter(o => {
+              const testsCount = (o.testsRequested && o.testsRequested.length) || (o.requestedItems && o.requestedItems.length) || 0;
+              return testsCount > 0 || Number(o.totalAmount) > 0;
+            });
           }
           return parsed;
         }
@@ -177,11 +182,25 @@ class LabStore {
   // إدارة طلبات التحاليل (Orders & Billing)
   // ==========================================
   createOrder({ patientId, testIds, discountAmount = 0, paidAmount = 0, paymentMethod = "cash" }) {
+    if (!patientId) {
+      console.error("createOrder: patientId مطلوب");
+      return null;
+    }
+    if (!testIds || !Array.isArray(testIds) || testIds.length === 0) {
+      console.error("createOrder: يرجى تحديد فحص طبي واحد على الأقل");
+      return null;
+    }
+    const cleanTestIds = testIds.filter(Boolean);
+    if (cleanTestIds.length === 0) {
+      console.error("createOrder: لا توجد أكواد فحوصات صالحة");
+      return null;
+    }
+
     const { orderId, barcode } = LabBarcode.generateOrderNumber(this.state.orders);
     
     // احتساب إجمالي تكلفة الفحوصات المختارة
     let totalAmount = 0;
-    testIds.forEach(tId => {
+    cleanTestIds.forEach(tId => {
       // فحص إذا كان تحليلاً منفرداً أو باقة
       const singleTest = this.state.tests.find(t => t.id === tId);
       if (singleTest) {
@@ -200,7 +219,7 @@ class LabStore {
 
     // تفكيك الباقات إلى تحاليل فعلية للتحليل المخبري
     const actualTestIds = [];
-    testIds.forEach(tId => {
+    cleanTestIds.forEach(tId => {
       const pkg = this.state.packages.find(p => p.id === tId);
       if (pkg) {
         pkg.testIds.forEach(subId => {
@@ -215,7 +234,7 @@ class LabStore {
       id: orderId,
       barcode,
       patientId,
-      requestedItems: testIds, // التحاليل والباقات المطلوبة
+      requestedItems: cleanTestIds, // التحاليل والباقات المطلوبة
       testsRequested: actualTestIds, // قائمة التحاليل الفعلية المفردة
       totalAmount,
       discountAmount: Number(discountAmount),
