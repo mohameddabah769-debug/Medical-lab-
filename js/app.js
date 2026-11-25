@@ -563,21 +563,37 @@ document.addEventListener("DOMContentLoaded", () => {
 // محرك الطباعة المركزي الموحد (Unified Dynamic Print Engine)
 // يضمن طباعة كافة التقارير والإيصالات دون صفحات بيضاء أو تداخل شاشات
 // ==========================================================================
+// محرك الطباعة الشامل والمتكامل لكافة تقارير وإيصالات النظام (Universal Print Engine)
+// ==========================================================================
 window.printDocument = function(mode = 'auto') {
   document.body.classList.remove('print-mode-receipt', 'print-mode-analytics', 'print-mode-audit', 'print-mode-report');
 
   const modal = document.getElementById("app-modal");
   const receiptContent = document.getElementById("receipt-printable-content");
-  const isReceiptOpen = modal && modal.classList.contains("active") && receiptContent;
+  const isReceiptOpen = modal && (modal.style.display === "flex" || modal.classList.contains("active")) && receiptContent;
+  const currentView = window.store ? window.store.state.currentView : 'dashboard';
 
-  if (mode === 'receipt' || (mode === 'auto' && isReceiptOpen)) {
+  let resolvedMode = mode;
+  if (resolvedMode === 'auto') {
+    if (isReceiptOpen) {
+      resolvedMode = 'receipt';
+    } else if (currentView === 'dashboard') {
+      resolvedMode = 'analytics';
+    } else if (currentView === 'finance') {
+      resolvedMode = 'audit';
+    } else {
+      resolvedMode = 'report';
+    }
+  }
+
+  if (resolvedMode === 'receipt') {
     document.body.classList.add('print-mode-receipt');
-  } else if (mode === 'analytics' || (mode === 'auto' && window.store && window.store.state.currentView === 'dashboard')) {
+  } else if (resolvedMode === 'analytics') {
     document.body.classList.add('print-mode-analytics');
-  } else if (mode === 'audit' || (mode === 'auto' && window.store && window.store.state.currentView === 'finance')) {
+  } else if (resolvedMode === 'audit') {
     document.body.classList.add('print-mode-audit');
   } else {
-    // Medical Report: ensure rendered
+    document.body.classList.add('print-mode-report');
     if (window.MedicalReportComponent && window.store) {
       if (window.store.state.currentView !== 'medical-report') {
         window.store.setView('medical-report');
@@ -585,35 +601,43 @@ window.printDocument = function(mode = 'auto') {
         window.MedicalReportComponent.render();
       }
     }
-    document.body.classList.add('print-mode-report');
   }
 
   setTimeout(() => {
     window.print();
-  }, 60);
+  }, 120);
 
   const cleanup = () => {
     document.body.classList.remove('print-mode-receipt', 'print-mode-analytics', 'print-mode-audit', 'print-mode-report');
     window.removeEventListener('afterprint', cleanup);
   };
   window.addEventListener('afterprint', cleanup);
-  setTimeout(cleanup, 2500);
+  setTimeout(cleanup, 4000);
 };
 
 window.addEventListener('beforeprint', () => {
-  const modal = document.getElementById("app-modal");
-  const receiptContent = document.getElementById("receipt-printable-content");
-  if (modal && modal.classList.contains("active") && receiptContent) {
-    document.body.classList.add('print-mode-receipt');
-  } else if (window.store && window.store.state.currentView === 'dashboard') {
-    document.body.classList.add('print-mode-analytics');
-  } else if (window.store && window.store.state.currentView === 'finance') {
-    document.body.classList.add('print-mode-audit');
-  } else {
-    if (window.MedicalReportComponent && window.store && window.store.state.currentView !== 'medical-report') {
-      window.MedicalReportComponent.render();
+  if (!document.body.classList.contains('print-mode-receipt') &&
+      !document.body.classList.contains('print-mode-analytics') &&
+      !document.body.classList.contains('print-mode-audit') &&
+      !document.body.classList.contains('print-mode-report')) {
+    
+    const modal = document.getElementById("app-modal");
+    const receiptContent = document.getElementById("receipt-printable-content");
+    const isReceiptOpen = modal && (modal.style.display === "flex" || modal.classList.contains("active")) && receiptContent;
+    const currentView = window.store ? window.store.state.currentView : 'dashboard';
+
+    if (isReceiptOpen) {
+      document.body.classList.add('print-mode-receipt');
+    } else if (currentView === 'dashboard') {
+      document.body.classList.add('print-mode-analytics');
+    } else if (currentView === 'finance') {
+      document.body.classList.add('print-mode-audit');
+    } else {
+      document.body.classList.add('print-mode-report');
+      if (window.MedicalReportComponent && window.store && window.store.state.currentView !== 'medical-report') {
+        window.MedicalReportComponent.render();
+      }
     }
-    document.body.classList.add('print-mode-report');
   }
 });
 

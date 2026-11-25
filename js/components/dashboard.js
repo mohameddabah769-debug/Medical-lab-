@@ -78,7 +78,28 @@ window.DashboardComponent = {
       </div>
 
       <!-- مركز التقارير الدورية وساعات الذروة (Analytics & Peak Hours Suite) -->
-      <div class="card" style="border:1.5px solid var(--border-color); box-shadow:var(--shadow-md);">
+      <div class="card analytics-card" id="analytics-suite-card" style="border:1.5px solid var(--border-color); box-shadow:var(--shadow-md);">
+        
+        <!-- ترويسة التقرير التحليلي عند الطباعة الرسمية -->
+        <div class="analytics-print-header" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2.5px solid #0284c7; padding-bottom:10px; margin-bottom:14px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:48px; height:48px; border-radius:6px; overflow:hidden; border:1px solid #cbd5e1; background:#fff;">
+                <img src="assets/serum-logo.jpg" alt="شعار معمل سيرم" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none';" />
+              </div>
+              <div>
+                <h2 style="margin:0; font-size:1.15rem; color:#0284c7; font-weight:800;">معمل سيرم للتحاليل الطبية</h2>
+                <p style="margin:2px 0 0; font-size:0.75rem; color:#475569;">نجع حمادي - شارع 15 مايو | هاتف: 01061615225</p>
+              </div>
+            </div>
+            <div style="text-align:left; font-size:0.78rem; color:#1e293b; line-height:1.4;">
+              <div style="font-weight:800; color:#0284c7; font-size:0.85rem;">تقرير المؤشرات والتشغيل (${periodData.periodLabel})</div>
+              <div>تاريخ الطباعة: ${new Date().toLocaleString('ar-EG')}</div>
+              <div>المستخرج: ${window.store.getCurrentUser().name}</div>
+            </div>
+          </div>
+        </div>
+
         <div class="card-header" style="flex-wrap:wrap; gap:12px;">
           <div class="card-title">
             <i data-lucide="bar-chart-3" style="color:var(--primary);"></i>
@@ -321,6 +342,14 @@ window.DashboardComponent = {
             </div>
           </div>
         `}
+
+        <!-- تذييل التقرير التحليلي عند الطباعة الرسمية -->
+        <div class="analytics-print-footer" style="display:none; margin-top:20px; border-top:1.5px solid #0284c7; padding-top:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:#475569;">
+            <div>اعتماد مدير المختبر: <strong>أ.د أحمد المراغي</strong> (استشاري التحاليل الطبية)</div>
+            <div>نظام LabCore Pro — سند لتطوير البرمجيات | م/ محمد الدباح • 01501084747 © 2026</div>
+          </div>
+        </div>
 
         <!-- تذييل حفظ حقوق البرمجة والطباعة لمركز التقارير -->
         <div style="margin-top:22px; padding:10px 14px; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:0.75rem;">

@@ -112,7 +112,7 @@
   }
 
   /* ==========================================================================
-     الوضع الثاني: طباعة مركز التقارير التحليلية وساعات الذروة (Analytics Mode)
+     الوضع الثاني: طباعة مركز التقارير التحليلية واليومية (Analytics & Daily Report Mode)
      ========================================================================== */
   body.print-mode-analytics .app-view:not(#view-dashboard) {
     display: none !important;
@@ -123,21 +123,28 @@
     width: 100% !important;
   }
 
-  body.print-mode-analytics .kpi-grid,
-  body.print-mode-analytics #view-dashboard > .card:not(.analytics-card),
+  body.print-mode-analytics .analytics-print-header,
+  body.print-mode-analytics .analytics-print-footer {
+    display: block !important;
+  }
+
   body.print-mode-analytics .analytics-period-selector,
-  body.print-mode-analytics #btn-print-analytics {
+  body.print-mode-analytics #btn-print-analytics,
+  body.print-mode-analytics #dash-btn-new-order,
+  body.print-mode-analytics .btn,
+  body.print-mode-analytics .action-icon-btn,
+  body.print-mode-analytics .theme-toggle-btn {
     display: none !important;
   }
 
-  body.print-mode-analytics .analytics-card {
-    border: none !important;
+  body.print-mode-analytics .card {
+    border: 1px solid #cbd5e1 !important;
     box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 100% !important;
+    padding: 14px !important;
+    margin-bottom: 16px !important;
     background: #ffffff !important;
     color: #0f172a !important;
+    page-break-inside: avoid;
   }
 
   body.print-mode-analytics .analytics-kpi-grid {
@@ -179,13 +186,27 @@
     width: 100% !important;
   }
 
-  body.print-mode-audit #view-finance > .card:not(.audit-card),
+  body.print-mode-audit .audit-print-header,
+  body.print-mode-audit .audit-print-footer {
+    display: block !important;
+  }
+
+  body.print-mode-audit .card-header,
   body.print-mode-audit .audit-filter-bar,
-  body.print-mode-audit #btn-print-audit-report {
+  body.print-mode-audit #btn-print-audit-report,
+  body.print-mode-audit #btn-reset-audit-filters,
+  body.print-mode-audit #subtab-content-debts,
+  body.print-mode-audit #subtab-content-expenses,
+  body.print-mode-audit #subtab-content-contracts {
     display: none !important;
   }
 
-  body.print-mode-audit .audit-card {
+  body.print-mode-audit #subtab-content-audit {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  body.print-mode-audit .card {
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
@@ -195,10 +216,25 @@
     color: #0f172a !important;
   }
 
+  body.print-mode-audit .audit-metrics-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px !important;
+    margin-bottom: 14px !important;
+  }
+
+  body.print-mode-audit .audit-metric-card {
+    border: 1px solid #cbd5e1 !important;
+    background: #f8fafc !important;
+    padding: 8px 10px !important;
+    border-radius: 6px !important;
+  }
+
   body.print-mode-audit #audit-table-print {
     width: 100% !important;
     border-collapse: collapse !important;
     font-size: 8.5pt !important;
+    margin-top: 10px !important;
   }
 
   body.print-mode-audit #audit-table-print th,
@@ -208,15 +244,24 @@
   }
 
   /* ==========================================================================
-     الوضع الرابع: طباعة التقرير الطبي الرسمي A4 (Medical Report Mode - الافتراضي)
+     الوضع الرابع: طباعة التقرير الطبي الرسمي A4 (Medical Report Mode)
      ========================================================================== */
-  body.print-mode-report .app-view:not(#view-medical-report),
-  body:not(.print-mode-receipt):not(.print-mode-analytics):not(.print-mode-audit) .app-view:not(#view-medical-report) {
+  body.print-mode-report .app-view:not(#view-medical-report) {
     display: none !important;
   }
 
-  body.print-mode-report #view-medical-report,
-  body:not(.print-mode-receipt):not(.print-mode-analytics):not(.print-mode-audit) #view-medical-report {
+  body.print-mode-report #view-medical-report {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  /* الوضع الافتراضي عند الطباعة المباشرة من المتصفح: عرض الشاشة النشطة */
+  body:not(.print-mode-receipt):not(.print-mode-analytics):not(.print-mode-audit):not(.print-mode-report) .app-view:not([style*="display: block"]):not([style*="display:block"]) {
+    display: none !important;
+  }
+
+  body:not(.print-mode-receipt):not(.print-mode-analytics):not(.print-mode-audit):not(.print-mode-report) .app-view[style*="display: block"],
+  body:not(.print-mode-receipt):not(.print-mode-analytics):not(.print-mode-audit):not(.print-mode-report) .app-view[style*="display:block"] {
     display: block !important;
     width: 100% !important;
   }

@@ -76,6 +76,15 @@ window.FinanceComponent = {
             <div class="kpi-sub">المقبوضات - المصروفات</div>
           </div>
 
+          <!-- تذييل كشف التدقيق المالي عند الطباعة -->
+          <div class="audit-print-footer" style="display:none; margin-top:16px; border-top:1.5px solid #0284c7; padding-top:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:#475569;">
+              <div>توقيع أمين الخزينة: ...........................</div>
+              <div>اعتماد مدير المختبر: <strong>أ.د أحمد المراغي</strong></div>
+              <div>سند لتطوير البرمجيات | م/ محمد الدباح • 01501084747 © 2026</div>
+            </div>
+          </div>
+
           <!-- تذييل حفظ حقوق الملكية والطباعة للدفتر المالي -->
           <div style="margin-top:16px; padding:8px 14px; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-md); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:0.75rem;">
             <div style="color:var(--text-primary); font-weight:700;">
@@ -89,7 +98,7 @@ window.FinanceComponent = {
       </div>
 
       <!-- الحاوية الرئيسية مع الألسنة الفرعية -->
-      <div class="card">
+      <div class="card audit-card">
         <div class="card-header">
           <div class="card-title">
             <i data-lucide="landmark"></i>
@@ -269,6 +278,27 @@ window.FinanceComponent = {
 
         <!-- 4. محتوى الفحص والتدقيق المالي الشامل (Audit Ledger) -->
         <div id="subtab-content-audit" style="display: ${this.activeSubTab === 'audit' ? 'block' : 'none'};">
+          
+          <!-- ترويسة كشف التدقيق المالي عند الطباعة الرسمية -->
+          <div class="audit-print-header" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2.5px solid #0284c7; padding-bottom:10px; margin-bottom:14px;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:48px; height:48px; border-radius:6px; overflow:hidden; border:1px solid #cbd5e1; background:#fff;">
+                  <img src="assets/serum-logo.jpg" alt="شعار معمل سيرم" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none';" />
+                </div>
+                <div>
+                  <h2 style="margin:0; font-size:1.15rem; color:#0284c7; font-weight:800;">معمل سيرم للتحاليل الطبية</h2>
+                  <p style="margin:2px 0 0; font-size:0.75rem; color:#475569;">دفتر الأستاذ العام والتدقيق المالي ومطابقة الخزينة</p>
+                </div>
+              </div>
+              <div style="text-align:left; font-size:0.78rem; color:#1e293b; line-height:1.4;">
+                <div style="font-weight:800; color:#0284c7; font-size:0.85rem;">كشف التدقيق المالي المعتمد</div>
+                <div>تاريخ الطباعة: ${new Date().toLocaleString('ar-EG')}</div>
+                <div>المستخرج: ${window.store.getCurrentUser().name}</div>
+              </div>
+            </div>
+          </div>
+
           <!-- شريط أدوات الفحص والتصفية الحية -->
           <div class="audit-filter-bar">
             <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:220px;">
@@ -410,6 +440,15 @@ window.FinanceComponent = {
                 }).join("")}
               </tbody>
             </table>
+          </div>
+
+          <!-- تذييل كشف التدقيق المالي عند الطباعة -->
+          <div class="audit-print-footer" style="display:none; margin-top:16px; border-top:1.5px solid #0284c7; padding-top:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:#475569;">
+              <div>توقيع أمين الخزينة: ...........................</div>
+              <div>اعتماد مدير المختبر: <strong>أ.د أحمد المراغي</strong></div>
+              <div>سند لتطوير البرمجيات | م/ محمد الدباح • 01501084747 © 2026</div>
+            </div>
           </div>
 
           <!-- تذييل حفظ حقوق الملكية والطباعة للدفتر المالي -->
