@@ -103,16 +103,19 @@
           <img src="assets/serum-logo.jpg" alt="شعار معمل سيرم" style="width:100%; height:100%; object-fit:cover; border-radius:inherit;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
           <i data-lucide="microscope" style="display:none;"></i>
         </div>
-        <div class="lab-brand-info">
-          <h1>LabCore Pro</h1>
-          <p>إدارة المختبرات الطبية الذكية</p>
-          <div id="sidebar-user-pill" style="display:inline-flex; align-items:center; gap:6px; margin-top:3px; font-size:0.72rem; color:var(--text-muted); background:var(--bg-tertiary); padding:2px 8px; border-radius:12px; border:1px solid var(--border-color);">
-            <span style="width:7px; height:7px; background:#10b981; border-radius:50%; display:inline-block;" title="متصل الآن"></span>
-            <span id="sidebar-logged-user-name" style="font-weight:700; color:var(--text-primary);">أ.د أحمد المراغي</span>
-            <span style="color:var(--text-muted);">·</span>
-            <span id="sidebar-logged-user-role" style="color:var(--primary); font-weight:600;">مدير المختبر</span>
-          </div>
+        <div class="lab-brand-info" style="overflow:hidden; min-width:0;">
+          <h1 style="margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">معمل سيرم للتحاليل</h1>
+          <p style="margin:2px 0 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Serum Medical Laboratory</p>
         </div>
+      </div>
+
+      <!-- شريط المستخدم النشط المدمج -->
+      <div id="sidebar-user-pill-container" style="padding:6px 14px; background:var(--bg-tertiary); border-bottom:1px solid var(--border-color); display:flex; align-items:center; justify-content:space-between; font-size:0.75rem;">
+        <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+          <span style="width:7px; height:7px; min-width:7px; background:#10b981; border-radius:50%;" title="متصل الآن"></span>
+          <span id="sidebar-logged-user-name" style="font-weight:700; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">أ.د أحمد المراغي</span>
+        </div>
+        <span id="sidebar-logged-user-role" style="font-size:0.68rem; background:rgba(2,132,199,0.12); color:var(--primary); border:1px solid rgba(2,132,199,0.25); padding:1px 7px; border-radius:10px; font-weight:700; white-space:nowrap;">مدير المختبر</span>
       </div>
 
       <nav class="sidebar-nav">
@@ -160,38 +163,40 @@
       </nav>
 
       <div class="sidebar-footer">
-        <!-- بطاقة حفظ حقوق البرمجة والنشر للمطور والشركة -->
-        <div class="sidebar-copyright-card">
-          <div class="sidebar-dev-company">
-            <i data-lucide="code-2" style="width:14px; height:14px;"></i>
-            <span>سند لتطوير البرمجيات</span>
-          </div>
-          <div class="sidebar-dev-name">م/ محمد الدباح 💻</div>
-          <div style="font-size:0.68rem; color:var(--text-muted);">حلول إدارة المعامل الطبية الذكية</div>
-          <a href="https://wa.me/201501084747" target="_blank" rel="noopener noreferrer" class="sidebar-dev-contact" title="تواصل مباشر عبر واتساب">
-            <span>01501084747 📲</span>
-          </a>
-        </div>
-
         <div class="backup-actions">
-          <button id="btn-export-backup" class="btn btn-outline btn-sm" title="تصدير نسخة احتياطية من كافة البيانات">
-            <i data-lucide="download"></i>
-            <span>تصدير JSON</span>
+          <button id="btn-export-backup" class="btn btn-outline btn-xs" style="flex:1; justify-content:center; padding:5px 8px; font-size:0.75rem;" title="تصدير نسخة احتياطية من كافة البيانات">
+            <i data-lucide="download" style="width:13px;height:13px;"></i>
+            <span>تصدير</span>
           </button>
-          <button id="btn-import-backup-trigger" class="btn btn-outline btn-sm" title="استيراد نسخة احتياطية">
-            <i data-lucide="upload"></i>
+          <button id="btn-import-backup-trigger" class="btn btn-outline btn-xs" style="flex:1; justify-content:center; padding:5px 8px; font-size:0.75rem;" title="استيراد نسخة احتياطية">
+            <i data-lucide="upload" style="width:13px;height:13px;"></i>
             <span>استيراد</span>
           </button>
           <input type="file" id="input-import-backup" accept=".json" style="display:none;">
+          <button id="btn-reset-demo" class="btn btn-outline btn-xs" style="width:30px; height:30px; padding:0; display:flex; align-items:center; justify-content:center; color:var(--text-muted);" title="إعادة ضبط البيانات التأسيسية">
+            <i data-lucide="rotate-ccw" style="width:13px;height:13px;"></i>
+          </button>
+          <button id="btn-logout-sidebar" class="btn btn-outline btn-xs" style="width:30px; height:30px; padding:0; display:flex; align-items:center; justify-content:center; color:var(--danger); border-color:rgba(239, 68, 68, 0.3);" title="تسجيل الخروج">
+            <i data-lucide="log-out" style="width:13px;height:13px;"></i>
+          </button>
         </div>
-        <button id="btn-reset-demo" class="btn btn-sm btn-outline" style="color:var(--text-muted); font-size:0.75rem;" title="استعادة البيانات التأسيسية">
-          <i data-lucide="rotate-ccw"></i>
-          <span>إعادة ضبط البيانات التأسيسية</span>
-        </button>
-        <button id="btn-logout-sidebar" class="btn btn-sm btn-outline" style="color:var(--danger); border-color:rgba(239, 68, 68, 0.3); margin-top:6px; width:100%; justify-content:center;" title="تسجيل الخروج">
-          <i data-lucide="log-out"></i>
-          <span>تسجيل الخروج</span>
-        </button>
+
+        <!-- بطاقة حفظ حقوق البرمجة والنشر للمطور والشركة -->
+        <div class="sidebar-copyright-card" style="padding:6px 10px; margin-bottom:0; background:var(--bg-tertiary); border:1px solid var(--border-color); border-radius:var(--radius-sm); text-align:right;">
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.72rem; font-weight:700;">
+            <div style="display:flex; align-items:center; gap:4px; color:var(--primary);">
+              <i data-lucide="code-2" style="width:12px; height:12px;"></i>
+              <span>سند لتطوير البرمجيات</span>
+            </div>
+            <a href="https://wa.me/201501084747" target="_blank" rel="noopener noreferrer" style="color:var(--text-muted); font-size:0.68rem; font-family:var(--font-mono); text-decoration:none;" title="واتساب / اتصال">
+              01501084747 📲
+            </a>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.65rem; color:var(--text-muted); margin-top:2px;">
+            <span>برمجة: <strong style="color:var(--text-primary);">م/ محمد الدباح 💻</strong></span>
+            <span>حلول المعامل الطبية الذكية</span>
+          </div>
+        </div>
       </div>
     </aside>
 
